@@ -10,7 +10,7 @@ setuptools.setup(
     author_email="vitopaolopastore@gmail.com",
     description="Toolbox for semantic features extraction ",
     long_description="Toolbox for semantic features extraction ",
-    url="https://github.com/Malga-Vision/VisionTool",
+    url="https://github.com/Malga-Vision/VisionTool.git",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
