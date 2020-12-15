@@ -47,7 +47,7 @@ class nb_panel_features(wx.Panel):
 
         else:
             try:
-                self.config_file = open(self.address + "\\file_configuration.txt", "r")
+                self.config_file = open(os.path.join(self.address + "file_configuration.txt"), "r")
             except:
                     wx.MessageBox('Error in reading the configuration file, file not accessible \n '
                                   'Configuration_file_error'
@@ -61,7 +61,7 @@ class nb_panel_features(wx.Panel):
                         "The project already contains videos.\n"
                         "Do you want to add new videos?", "Confirm",
                         wx.YES_NO | wx.NO_DEFAULT, self) == wx.NO:
-                    self.frame = Label_frames(self, self.size, self.address + "\\file_configuration.txt")
+                    self.frame = Label_frames(self, self.size, os.path.join(self.address + "file_configuration.txt"))
                     self.Setsizer3()
                 else:
                     self.flag_was_already_open = 1
@@ -87,7 +87,7 @@ class nb_panel_features(wx.Panel):
                 # if len(videos)==0:
                 #     error = wx.MessageBox("Warning","Attention, no valid video has been selected")
                     try:
-                        self.config_file = open(self.address + "\\file_configuration.txt", "r")
+                        self.config_file = open(os.path.join(self.address + "file_configuration.txt"), "r")
                     except:
                         wx.MessageBox('Error in reading the configuration file, file not accessible \n '
                                       'Configuration_file_error'
@@ -98,7 +98,7 @@ class nb_panel_features(wx.Panel):
                     self.config_file.close()
 
                     try:
-                        self.config_file = open(self.address + "\\file_configuration.txt", "a")
+                        self.config_file = open(os.path.join(self.address + "file_configuration.txt"), "a")
                     except:
                         wx.MessageBox('Error in reading the configuration file, file not accessible \n '
                                       'Configuration_file_error'
@@ -114,7 +114,7 @@ class nb_panel_features(wx.Panel):
                             self.config_file.writelines( pathname[i] + '\n')
 
                 self.config_file.close()
-                self.frame = Label_frames(self,self.size,self.address + "\\file_configuration.txt")
+                self.frame = Label_frames(self,self.size,os.path.join(self.address + "file_configuration.txt"))
                 self.Setsizer3()
     # open annotation interface
 
@@ -125,9 +125,6 @@ class nb_panel_pose(wx.Panel):
     def __init__(self,parent,name,menu,menuName,address):
         wx.Panel.__init__(self,parent=parent)
         self.address = address
-        # media_path = 'C:\\Users\\vitop\\Desktop\\2020_WORK\\features selector\\'
-        # logo = os.path.join(media_path, 'malga.png')
-        # wx.StaticBitmap(self, bitmap=wx.Bitmap(logo), pos=(10, 250))
         self.Menu = menu
         self.MenuName = menuName
         sizer = wx.BoxSizer(wx.HORIZONTAL)
