@@ -19,7 +19,7 @@ import matplotlib
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pathlib import Path
 import argparse
-from auxfun_drag_label import*
+from VisionTool.auxfun_drag_label import*
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
 from VisionTool.annotation import *
