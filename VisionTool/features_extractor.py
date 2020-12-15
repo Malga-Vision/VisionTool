@@ -1,6 +1,6 @@
 import wx
 import os
-from nb_panel import *
+from VisionTool.nb_panel import *
 
 class features_Extractor(nb_panel_features):
     # ----------------------------------------------------------------------
