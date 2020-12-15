@@ -1,3 +1,23 @@
+"""
+    Source file name: annotation.py  
+    
+    Description: this file contains the code to open the GUI to perform annotation 
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
+
+
+
 import wx
 import os
 import sys
@@ -141,7 +161,7 @@ class Label_frames(wx.Panel):
         self.video_list_text = self.get_video_list()
         self.video_list_with_address = self.get_video_list()
         for i in range(0,len(self.video_list_text)):
-            self.video_list_text[i] = self.video_list_text[i][self.find(self.video_list_text[i], '\\')[-1] + 1:-1]
+            self.video_list_text[i] = self.video_list_text[i][self.find(self.video_list_text[i], os.sep)[-1] + 1:-1]
         self.video_list_text.append('Analyze_all')
         self.video_list = wx.CheckListBox(self, -1, (400, 25), wx.DefaultSize)
 
@@ -185,7 +205,7 @@ class Label_frames(wx.Panel):
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + '\\Architecture_Preferences.txt'
-        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
             return
@@ -193,7 +213,7 @@ class Label_frames(wx.Panel):
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
         else:
-            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + '\\' + self.name + '\\',annotation_folder = os.path.join(self.address,self.name + 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
+            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name + 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
             pass
 
     def check_and_test(self,event):
@@ -201,7 +221,7 @@ class Label_frames(wx.Panel):
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + '\\Architecture_Preferences.txt'
-        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
             return
@@ -222,7 +242,7 @@ class Label_frames(wx.Panel):
 
                 else:
                     training(address=self.address_proj, file_annotation=self.filename[:-4],
-                             image_folder=self.address + '\\' + self.name + '\\',
+                             image_folder=self.address + os.sep + self.name + os.sep,
                              annotation_folder=os.path.join(self.address, self.name + 'annotation'),
                              bodyparts=self.bodyparts, train_flag=0,annotation_assistance=0)
 
@@ -250,7 +270,7 @@ class Label_frames(wx.Panel):
             self.scorer = self.pref[1]
             self.bodyparts = self.pref[9:]
             self.title_video = self.video_list_with_address[self.index_video][
-                               self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+                               self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
             try:
                 self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
                 copyfile(pathname[0],pathname[0][:-4] + 'original' + '.csv')
@@ -356,7 +376,7 @@ class Label_frames(wx.Panel):
         self.scorer = self.pref[1]
         self.bodyparts = self.pref[9:]
         self.title_video = self.video_list_with_address[self.index_video][
-                           self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+                           self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
 
         self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
 
