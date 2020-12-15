@@ -10,7 +10,7 @@ setuptools.setup(
     long_description="Toolbox for semantic features extraction ",
     url="https://github.com/Malga-Vision/VisionTool.git",
     packages=setuptools.find_packages(),
-    install_reqs = ['pyparsing==2.4.7',
+    install_requires = ['pyparsing==2.4.7',
 'python-dateutil==2.8.1',
 'pytz==2020.1',
 'PyWavelets==1.1.1',
