@@ -23,8 +23,6 @@ import os
 from datetime import date
 from VisionTool.New_project_features import *
 
-os.path.join(
-
 class routine():
 
     def __init__(self, *args, **kwargs):
