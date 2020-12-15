@@ -1,3 +1,26 @@
+"""
+    Source file name: opening_toolbox.py  
+    
+    Description: this file contains the code to handle the GUI for actually performing the annotation of frames into VisionTool. 
+    
+    Code adapted and modified from: 
+    Alexander Mathis, Pranav Mamidanna, Kevin M Cury, Taiga Abe, Venkatesh N Murthy,Mackenzie Weygandt Mathis, and Matthias Bethge. Deeplabcut: markerless pose estimation
+    of user-defined body parts with deep learning. Nature neuroscience, 21(9):1281{1289, 2018.
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
+
+
 import os
 import wx
 import cv2
@@ -6,7 +29,6 @@ import os.path
 import glob
 import cv2
 from shutil import copyfile
-
 import wx
 import wx.lib.scrolledpanel as SP
 import pandas as pd
@@ -28,9 +50,7 @@ from VisionTool.architectures_segmentation import unet
 from VisionTool.training import *
 
 
-# ###########################################################################
-# Class for GUI MainFrame
-# ###########################################################################
+
 class ImagePanel(wx.Panel):
     def __init__(self, parent,config, gui_size, **kwargs):
         h = gui_size[0] / 2
@@ -214,7 +234,7 @@ class MainFrame(wx.Frame):
 
         self.colormap = self.colormap.reversed()
         config2.close()
-        self.title_video = self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+        self.title_video = self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         self.name = 'Extracted_frames_' + self.title_video
         self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer
 
@@ -381,7 +401,7 @@ class MainFrame(wx.Frame):
         self.buttonCounter = []
         self.markerSize = self.slider.GetValue()
         img_name = Path(self.index[self.iter]).name
-        self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + '\\' + self.name + '\\'+self.img, img_name, self.iter,
+        self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + os.sep + self.name + os.sep+self.img, img_name, self.iter,
                                                                                       self.index, self.bodyparts,
                                                                                       self.colormap, keep_view=True)
 
@@ -419,14 +439,14 @@ class MainFrame(wx.Frame):
         self.dataFrame.to_pickle(self.filename+'_MANUAL')  # where to save it, usually as a .pkl
 
         predicted_Address = (self.address + '\\prediction')
-        imlist = os.listdir(self.address + '\\' + self.name)
+        imlist = os.listdir(self.address + os.sep + self.name)
         annotated = np.where(np.isnan(self.dataFrame.iloc[:, 0].values) == False)[0]
 
         for j in range(0, len(imlist)):
             if j in annotated:
                 continue
             for i in range(1, len(self.bodyparts)+1):
-                a = cv2.imread(os.path.join(predicted_Address + '\\',
+                a = cv2.imread(os.path.join(predicted_Address + os.sep,
                                             ("{:02d}".format(i)) + self.relativeimagenames[j][7:]))
                 a = cv2.cvtColor(a, cv2.COLOR_BGR2GRAY)
                 thresh, a = cv2.threshold(a, 0.99, 1, cv2.THRESH_BINARY)
@@ -482,7 +502,7 @@ class MainFrame(wx.Frame):
 
     def deep_lab_cut_conversion_dataframe(self):
 
-        imlist = os.listdir(self.address + '\\' + self.name)
+        imlist = os.listdir(self.address + os.sep + self.name)
         for i in range(0, len(imlist)):
             imlist[i] = 'labeled' + imlist[i]
         a = np.empty((len(self.index), 2,))
@@ -497,7 +517,7 @@ class MainFrame(wx.Frame):
         for j in range(0, num_columns):
             for i in range(3, len(self.dataFrame[self.dataFrame.columns[0]].values)):
                 temp = self.dataFrame[self.dataFrame.columns[0]].values[i]
-                index = self.find(temp, '\\')
+                index = self.find(temp, os.sep)
                 index = index[len(index) - 1]
                 index3 = self.find(temp, '.')
                 index3 = index3[len(index3) - 1]
@@ -511,7 +531,7 @@ class MainFrame(wx.Frame):
 
         # for i in range(3, len(self.dataFrame[self.dataFrame.columns[0]].values)):
         #     temp = self.dataFrame[self.dataFrame.columns[0]].values[i]
-        #     index = self.find(temp, '\\')
+        #     index = self.find(temp, os.sep)
         #     index = index[len(index) - 1]
         #     index3 = self.find(temp, '.')
         #     index3 = index3[len(index3) - 1]
@@ -557,7 +577,7 @@ class MainFrame(wx.Frame):
                 self.flag_train = 1
 
             a = training(address=self.address, file_annotation=self.filename,
-                     image_folder=self.address + '\\' + self.name + '\\',
+                     image_folder=self.address + os.sep + self.name + os.sep,
                      annotation_folder=os.path.join(self.address, self.name + 'annotation'), bodyparts=self.bodyparts,
                      train_flag = self.flag_train,annotation_assistance=1)
             if a.error !=-1:
@@ -713,7 +733,7 @@ class MainFrame(wx.Frame):
         imlist = []
         #for imtype in self.imtypes:
             #imlist.extend([fn for fn in glob.glob(os.path.join(self.address, 'Extracted_frames')) if ('labeled.png' not in fn)])
-        imlist = os.listdir(self.address + '\\' + self.name)
+        imlist = os.listdir(self.address + os.sep + self.name)
         if len(imlist) == 0:
             print("No images found!!")
 
@@ -768,7 +788,7 @@ class MainFrame(wx.Frame):
         # Reading the image name
         self.img = self.index[self.iter]
         img_name = Path(self.index[self.iter]).name
-        self.norm, self.colorIndex = self.image_panel.getColorIndices(self.address + '\\' + self.name + '\\' + self.img, self.bodyparts)
+        self.norm, self.colorIndex = self.image_panel.getColorIndices(self.address + os.sep + self.name + os.sep + self.img, self.bodyparts)
 
         # Checking for new frames and adding them to the existing dataframe
         old_imgs = np.sort(list(self.dataFrame.index))
@@ -803,7 +823,7 @@ class MainFrame(wx.Frame):
         self.new_bodyparts = [x for x in self.bodyparts if x not in oldbodyparts2plot]
         # Checking if user added a new label
         if self.new_bodyparts == []:  # i.e. no new label
-            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + '\\' + self.name + '\\' + self.img, img_name, self.iter,
+            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + os.sep + self.name + os.sep + self.img, img_name, self.iter,
                                                                                           self.index, self.bodyparts,
                                                                                           self.colormap)
             self.axes.callbacks.connect('xlim_changed', self.onZoom)
@@ -830,7 +850,7 @@ class MainFrame(wx.Frame):
                 frame = pd.DataFrame(a, columns=index, index=self.relativeimagenames)
                 self.dataFrame = pd.concat([self.dataFrame, frame], axis=1)
 
-            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + '\\' + self.name + '\\' + self.img, img_name, self.iter,
+            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + os.sep + self.name + os.sep + self.img, img_name, self.iter,
                                                                                           self.index, self.bodyparts,
                                                                                           self.colormap)
             self.axes.callbacks.connect('xlim_changed', self.onZoom)
@@ -896,7 +916,7 @@ class MainFrame(wx.Frame):
             self.img = self.index[self.iter]
             img_name = 'temp' + str(self.iter)
             #self.figure.delaxes(self.figure.axes[1])  # Removes the axes corresponding to the colorbar
-            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + '\\' + self.name + '\\'+ self.img, img_name, self.iter,
+            self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + os.sep + self.name + os.sep+ self.img, img_name, self.iter,
                                                                                           self.index, self.bodyparts,
                                                                                           self.colormap,
                                                                                           keep_view=self.view_locked)
@@ -943,7 +963,7 @@ class MainFrame(wx.Frame):
         self.rdb.SetSelection(0)
         self.img = self.index[self.iter]
         img_name = Path(self.index[self.iter]).name
-        self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + '\\' + self.name + '\\'+ self.img, img_name, self.iter,
+        self.figure, self.axes, self.canvas, self.toolbar = self.image_panel.drawplot(self.address + os.sep + self.name + os.sep+ self.img, img_name, self.iter,
                                                                                       self.index, self.bodyparts,
                                                                                       self.colormap,
                                                                                       keep_view=self.view_locked)
