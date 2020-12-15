@@ -1,4 +1,4 @@
-from architectures_segmentation import *
+from VisionTool.architectures_segmentation import *
 import os
 import wx
 import matplotlib.pyplot as plt
