@@ -46,7 +46,7 @@ class Frame_main(wx.Frame):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
 
-        new_project = wx.MenuItem(fileMenu, wx.LANGUAGE_DEFAULT, '&New Project\tCtrl+N')
+        new_project = wx.MenuItem(fileMenu, wx.LANGUAGE_DEFAULT+1, '&New Project\tCtrl+N')
 
         self.Bind(wx.EVT_MENU, self.new_project_routine, new_project)
 
