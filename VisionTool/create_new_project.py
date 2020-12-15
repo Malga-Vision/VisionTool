@@ -1,7 +1,7 @@
 import wx
 import os
 from datetime import date
-from New_project_features import *
+from VisionTool.New_project_features import *
 
 
 
