@@ -74,7 +74,7 @@ class Frame_main(wx.Frame):
             name = self.notebook.GetPageText(p)
 
             fileMenu.Append(p,"%s\tCtrl+%d" % (name,p+1),"Go to the %s page" % (name))
-            self.Bind(wx.EVT_MENU,self.GoToPage,id=p)
+            self.Bind(wx.EVT_MENU,self.GoToPage,id=p+1)
 
 
         fileMenu.AppendSeparator()
