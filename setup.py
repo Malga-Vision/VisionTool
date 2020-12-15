@@ -1,4 +1,5 @@
 import setuptools
+from pip.req import parse_requirements
 
 
 setuptools.setup(
