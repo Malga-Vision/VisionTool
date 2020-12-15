@@ -1,9 +1,29 @@
+"""
+    Source file name: create_new_project.py  
+    
+    Description: this file allows VisionTool to create a new project, creating the correspondent configuration file   
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import wx
 import os
 from datetime import date
 from VisionTool.New_project_features import *
 
-
+os.path.join(
 
 class routine():
 
@@ -11,6 +31,17 @@ class routine():
 
         super(routine, self).__init__(*args, **kwargs)
 
+    
+    
+    def ask(self,parent=None, message='insert name for project'):
+        default_value = "New_project_" + str(date.today())
+        dlg = wx.TextEntryDialog(parent, message, value=default_value)
+        dlg.ShowModal()
+        result = dlg.GetValue()
+        dlg.Destroy()
+        return result
+    
+    
     def new_project(self):
 
         dlg = wx.DirDialog(None,"Choose directory where saving project", "",
@@ -18,14 +49,14 @@ class routine():
         if dlg.ShowModal() == wx.ID_OK:
             fdir = dlg.GetPath() + "/"
             dlg.SetPath(fdir)
-
-        self.address = dlg.GetPath()+  "\\New_project_" + str(date.today())
+        filename = self.ask()
+        self.address = os.path.join(dlg.GetPath(),filename)
         try:
-            os.mkdir(dlg.GetPath() + "\\New_project_" + str(date.today()))
+            os.mkdir(os.path.join(dlg.GetPath(),(filename))
         except:
             error = wx.MessageBox("Folder already exists")
         if not os.path.isfile(self.address + "\\file_configuration.txt"):
-            self.config_file = open(self.address + "\\file_configuration.txt", "a")
+            self.config_file = open(os.path.join(self.address + "\\file_configuration.txt"), "a")
             self.config_file.write("New_project_" + str(date.today()))
             dlg.Destroy()
             self.config_file.close()
