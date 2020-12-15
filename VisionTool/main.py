@@ -46,7 +46,7 @@ class Frame_main(wx.Frame):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
 
-        new_project = wx.MenuItem(fileMenu, wx.LANGUAGE_DEFAULT+1, '&New Project\tCtrl+N')
+        new_project = wx.MenuItem(fileMenu, wx.ID_ANY, '&New Project\tCtrl+N')
 
         self.Bind(wx.EVT_MENU, self.new_project_routine, new_project)
 
@@ -74,7 +74,7 @@ class Frame_main(wx.Frame):
             name = self.notebook.GetPageText(p)
 
             fileMenu.Append(p+1,"%s\tCtrl+%d" % (name,p),"Go to the %s page" % (name))
-            self.Bind(wx.EVT_MENU,self.GoToPage,id=p+1)
+            self.Bind(wx.EVT_MENU,self.GoToPage,id=p)
 
 
         fileMenu.AppendSeparator()
