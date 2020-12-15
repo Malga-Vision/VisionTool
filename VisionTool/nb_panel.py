@@ -1,6 +1,6 @@
 import wx
 import os
-from annotation import *
+from VisionTool.annotation import *
 
 
 class nb_panel_features(wx.Panel):
