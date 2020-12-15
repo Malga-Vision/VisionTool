@@ -1,10 +1,10 @@
 import wx
 import os
-from annotation import *
+from VisionTool.annotation import *
 import cv2
 import numpy as np
 import shutil
-from New_project_features import *
+from VisionTool.New_project_features import *
 import random
 
 
