@@ -26,7 +26,6 @@ setuptools.setup(
 'sklearn==0.0',
 'tensorboard==2.4.0',
 'tensorboard-plugin-wit==1.6.0.post3',
-'tensorflow-gpu==2.4.0',
 'termcolor==1.1.0',
 'threadpoolctl==2.1.0',
 'tifffile==2020.6.3',
@@ -36,6 +35,7 @@ setuptools.setup(
 'wincertstore==0.2',
 'wrapt==1.12.1',
 'wxPython==4.1.0',
-'zipp==3.1.0'        ]                    
+'zipp==3.1.0'        ],
+extra_requires= ['tensorflow-gpu==2.4.0']
     
 )
