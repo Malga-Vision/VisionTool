@@ -12,9 +12,5 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_reqs = parse_requirements('requirements.txt', session='hack')
                     
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License ::GNU License",
-        "Operating System :: OS Independent",
-    ],
+    
 )
