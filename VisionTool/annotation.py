@@ -1,7 +1,7 @@
 import wx
 import os
 import sys
-import VisionTool.opening_toolbox
+from VisionTool import opening_toolbox
 import cv2
 from VisionTool.Frame_Extraction import *
 from VisionTool.Interface_net import *
