@@ -1,6 +1,6 @@
 import wx
 import os
-from nb_panel import *
+from VisionTool.nb_panel import *
 
 
 
