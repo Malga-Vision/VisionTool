@@ -22,10 +22,10 @@ import argparse
 from auxfun_drag_label import*
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
-from annotation import *
+from VisionTool.annotation import *
 #automatic annotation
-from architectures_segmentation import unet
-from training import *
+from VisionTool.architectures_segmentation import unet
+from VisionTool.training import *
 
 
 # ###########################################################################
