@@ -24,7 +24,7 @@ setuptools.setup(
 'scipy==1.4.1',
 'segmentation-models==1.0.1',
 'six==1.15.0',
-''sklearn==0.0',
+'sklearn==0.0',
 'tensorboard==2.2.2',
 'tensorboard-plugin-wit==1.6.0.post3',
 'tensorflow-estimator==1.13.0',
