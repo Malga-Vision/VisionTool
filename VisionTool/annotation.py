@@ -1,23 +1,11 @@
-"""
-
-
-
-
-
-
-
-
-
-
-
 import wx
 import os
 import sys
-import opening_toolbox
+import VisionTool.opening_toolbox
 import cv2
-from Frame_Extraction import *
-from Interface_net import *
-from training import *
+from VisionTool.Frame_Extraction import *
+from VisionTool.Interface_net import *
+from VisionTool.training import *
 from shutil import copyfile
 import pandas as pd
 
