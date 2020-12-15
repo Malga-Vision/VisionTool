@@ -1,3 +1,20 @@
+"""
+    Source file name: Frame_Extraction.py  
+    
+    Description: this file contains the code to extract frames to proceed with manual annotation 
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import wx
 import os
 from VisionTool.annotation import *
@@ -10,7 +27,8 @@ import random
 
 class extract_Frames(wx.Panel):
 
-    def __init__(self,parent,video_list_with_address,index_video,annotation_preferences,index_type,config,import_from_deeplabcut_flag):
+    def __init__(self, parent, video_list_with_address, index_video, annotation_preferences, index_type, config,
+                 import_from_deeplabcut_flag):
 
         wx.Panel.__init__(self, parent=parent)
         self.config = config
@@ -19,7 +37,8 @@ class extract_Frames(wx.Panel):
         self.annotation = annotation_preferences
         self.video_list_with_address = video_list_with_address
         self.index_video = index_video
-        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], '\\')[-1] + 1:-1]
+        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][
+                                          self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
 
         if not os.path.isfile(os.path.dirname(self.config) + '//annotation_options.txt'):
 
@@ -29,10 +48,8 @@ class extract_Frames(wx.Panel):
                     "A set of preferences has already been saved.\n"
                     "Do you want to change your preferences?", "Confirm",
                     wx.YES_NO | wx.YES_DEFAULT, self) == wx.YES:
-                os.remove(os.path.dirname(self.config)+ '//annotation_options.txt')
-                Frame_selection(self,os.path.dirname(self.config)+ '//annotation_options.txt')
-
-
+                os.remove(os.path.dirname(self.config) + '//annotation_options.txt')
+                Frame_selection(self, os.path.dirname(self.config) + '//annotation_options.txt')
 
         if index_type == 0:
             self.uniform()
@@ -44,11 +61,13 @@ class extract_Frames(wx.Panel):
 
     def find(self, s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
+
     def uniform(self):
         pass
 
     def k_means(self):
         pass
+
     def manual(self):
         pass
 
@@ -57,14 +76,14 @@ class extract_Frames(wx.Panel):
         self.cap = cv2.VideoCapture(self.video_list_with_address[self.index_video][:-1])
         success, image = self.cap.read()
         count = 0
-        #get preferences in textbox annotation panel
+        # get preferences in textbox annotation panel
         start = int(self.annotation.get_Text(1))
         end = int(self.annotation.get_Text(2))
 
         self.address = os.path.dirname(self.config)
 
-        if not os.path.isdir(self.address + '\\' + self.name):
-            os.mkdir(self.address + '\\' + self.name)
+        if not os.path.isdir(self.address + os.sep + self.name):
+            os.mkdir(self.address + os.sep + self.name)
 
             num_frame_annotated = int(self.annotation.get_Text(3))
             num_frame_automatic = int(self.annotation.get_Text(4))
@@ -100,10 +119,8 @@ class extract_Frames(wx.Panel):
                 "Do you want to extract frames again? (The procedure will delete previous frames", "Confirm",
                 wx.YES_NO | wx.NO_DEFAULT, self)
             if permission == 2:
-                shutil.rmtree(self.address + '\\' + self.name)
-                os.mkdir(self.address + '\\' + self.name)
-
-
+                shutil.rmtree(self.address + os.sep + self.name)
+                os.mkdir(self.address + os.sep + self.name)
 
                 num_frame_annotated = int(self.annotation.get_Text(3))
                 num_frame_automatic = int(self.annotation.get_Text(4))
@@ -111,27 +128,27 @@ class extract_Frames(wx.Panel):
                 my_list = list(range(start,
                                      end))  # list of integers from 1 to 99                # adjust this boundaries to fit your needs
                 random.shuffle(my_list)
-                if num_frame_annotated != 0 or self.import_from_deeplabcut_flag==1:
-                        if num_frame_annotated < (end -start):
-                            if self.import_from_deeplabcut_flag:
-                                frames = self.annotation.Get_annotation_for_deeplabcut_compat()
-                            else:
-                                frames = my_list[0:num_frame_annotated]
-                            frames_annotated = my_list[num_frame_annotated:num_frame_automatic + num_frame_annotated]
-                        address = os.path.dirname(self.annotation.config)
-                        p = open(os.path.join(address, '_index_annotation.txt'), 'w')
-                        p2 = open(os.path.join(address, '_index_annotation_auto.txt'), 'w')
+                if num_frame_annotated != 0 or self.import_from_deeplabcut_flag == 1:
+                    if num_frame_annotated < (end - start):
+                        if self.import_from_deeplabcut_flag:
+                            frames = self.annotation.Get_annotation_for_deeplabcut_compat()
+                        else:
+                            frames = my_list[0:num_frame_annotated]
+                        frames_annotated = my_list[num_frame_annotated:num_frame_automatic + num_frame_annotated]
+                    address = os.path.dirname(self.annotation.config)
+                    p = open(os.path.join(address, '_index_annotation.txt'), 'w')
+                    p2 = open(os.path.join(address, '_index_annotation_auto.txt'), 'w')
 
-                        for i in frames:
-                            p.writelines(str(i))
-                            p.writelines('\n')
+                    for i in frames:
+                        p.writelines(str(i))
+                        p.writelines('\n')
 
-                        for i in frames_annotated:
-                            p2.writelines(str(i))
-                            p2.writelines('\n')
+                    for i in frames_annotated:
+                        p2.writelines(str(i))
+                        p2.writelines('\n')
 
-                        p.close()
-                        p2.close()
+                    p.close()
+                    p2.close()
 
 
 
@@ -139,25 +156,25 @@ class extract_Frames(wx.Panel):
 
             else:
                 return
-                
-        self.frames_id =np.asarray(range(start,end,1)).astype(int)
+
+        self.frames_id = np.asarray(range(start, end, 1)).astype(int)
         progress = wx.ProgressDialog("extraction in progress", "please wait", maximum=100, parent=self,
                                      style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE)
 
         self.processSents()
-        while success and count<start:
+        while success and count < start:
             count += 1
             success, image = self.cap.read()
-        while success and count >=start and count < end:
+        while success and count >= start and count < end:
             success, image = self.cap.read()
-            progress.Update(int(count/len(self.frames_id))*100)
-            cv2.imwrite(self.address + '\\' + self.name + '\\' + 'frame_' + ("{:04d}".format(count)) + '.png', image)
+            progress.Update(int(count / len(self.frames_id)) * 100)
+            cv2.imwrite(self.address + os.sep + self.name + os.sep + 'frame_' + ("{:04d}".format(count)) + '.png',
+                        image)
             count += 1
 
         progress.Destroy()
 
         self.cap.release()
-
 
     def processSents(self):
         wx.Yield()
