@@ -50,12 +50,12 @@ class routine():
         filename = self.ask()
         self.address = os.path.join(dlg.GetPath(),filename)
         try:
-            os.mkdir(os.path.join(dlg.GetPath(),(filename))
+            os.mkdir(os.path.join(dlg.GetPath(),filename))
         except:
             error = wx.MessageBox("Folder already exists")
-        if not os.path.isfile(self.address + "\\file_configuration.txt"):
-            self.config_file = open(os.path.join(self.address + "\\file_configuration.txt"), "a")
-            self.config_file.write("New_project_" + str(date.today()))
+        if not os.path.isfile(os.path.join(self.address,"file_configuration.txt")):
+            self.config_file = open(os.path.join(self.address,"file_configuration.txt"), "a")
+            self.config_file.write(filename)
             dlg.Destroy()
             self.config_file.close()
         else:
@@ -73,7 +73,7 @@ class routine():
 
         self.address = dlg.GetPath()
 
-        if not os.path.isfile(self.address + "\\file_configuration.txt"):
+        if not os.path.isfile(os.path.join(self.address,"file_configuration.txt")):
             error = wx.MessageBox("Project folder is not valid: Configuration file not found!")
             return ""
 
