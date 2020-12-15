@@ -18,7 +18,6 @@
 import wx
 from VisionTool.annotation import *
 
-
 class nb_panel_features(wx.Panel):
 
     def __init__(self,parent,name,gui_size,menu,menuName,address):
@@ -79,8 +78,9 @@ class nb_panel_features(wx.Panel):
                         wx.YES_NO | wx.NO_DEFAULT, self) == wx.NO:
                     self.frame = Label_frames(self, self.size, os.path.join(self.address , "file_configuration.txt"))
                     self.Setsizer3()
-                else:
                     self.flag_was_already_open = 1
+
+                else:
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
@@ -96,6 +96,7 @@ class nb_panel_features(wx.Panel):
 
                     if self.flag_was_already_open:
                         self.frame.Destroy()
+                        self.Update()
 
                     pathname = fileDialog.GetPaths()
 
