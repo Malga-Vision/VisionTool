@@ -1,10 +1,9 @@
 import wx
-from create_new_project  import *
+from VisionTool.create_new_project  import *
 import os
 import random
-from features_extractor import *
-from action_classification import *
-from pose_estimation import *
+from VisionTool.features_extractor import *
+from VisionTool.pose_estimation import *
 
 
 class Notebook(wx.Notebook):
