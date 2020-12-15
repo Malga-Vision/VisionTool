@@ -46,7 +46,7 @@ setuptools.setup(
 'protobuf==3.12.2',
 'pyasn1==0.4.8',
 'pyasn1-modules==0.2.8',
-'pyparsing==2.4.7,
+'pyparsing==2.4.7',
 'python-dateutil==2.8.1',
 'pytz==2020.1',
 'PyWavelets==1.1.1',
