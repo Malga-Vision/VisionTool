@@ -71,9 +71,9 @@ class Frame_main(wx.Frame):
 
 
         for p in range(self.notebook.GetPageCount()):
-            name = self.notebook.GetPageText(p+1)
+            name = self.notebook.GetPageText(p)
 
-            fileMenu.Append(p+1,"%s\tCtrl+%d" % (name,p+1),"Go to the %s page" % (name))
+            fileMenu.Append(p+1,"%s\tCtrl+%d" % (name,p),"Go to the %s page" % (name))
             self.Bind(wx.EVT_MENU,self.GoToPage,id=p+1)
 
 
@@ -96,7 +96,7 @@ class Frame_main(wx.Frame):
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.AdjustMenus)
         self.Bind(wx.EVT_MENU, self.OnMenu)
         ### This disables the currently selected menu item
-        menubar.Enable(self.notebook.GetSelection(), False)
+        menubar.Enable(self.notebook.GetSelection()+1, False)
 
     def GoToPage(self, evt):
         self.notebook.ChangeSelection(evt.GetId())
@@ -112,7 +112,7 @@ class Frame_main(wx.Frame):
         ### because the tabmenu item id's match the index
         ### of the notebook page index, this works
         for page in range(self.notebook.GetPageCount()):
-            if page == self.notebook.GetSelection():
+            if page == self.notebook.GetSelection()+1:
                 ### The Menubar can enable any menu item by ID alone
                 mbar.Enable(page, False)
             else:
