@@ -71,7 +71,7 @@ class Frame_main(wx.Frame):
 
 
         for p in range(self.notebook.GetPageCount()):
-            name = self.notebook.GetPageText(p)
+            name = self.notebook.GetPageText(p+1)
 
             fileMenu.Append(p+1,"%s\tCtrl+%d" % (name,p+1),"Go to the %s page" % (name))
             self.Bind(wx.EVT_MENU,self.GoToPage,id=p+1)
