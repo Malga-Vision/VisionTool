@@ -195,25 +195,26 @@ class Open_interface(wx.Frame):
     def create_training_dataset(self,event):
         userfeedback_option = self.userfeedback.GetStringSelection()
         try:
-            file = open(self.config,'w')
-            file.write('NN\n')
-            file.write(self.net_choice.GetStringSelection() + '\n')
-            file.write('Backbone\n')
-            file.write(self.aug_choice.GetStringSelection() + '\n')
-            file.write('Image net pre-trained weights\n')
-            file.write(userfeedback_option + '\n')
-            file.write('Single labels\n')
-            file.write(str(self.userfeedback_images.GetStringSelection()) + '\n')
-            file.write('Learning rate\n')
-            file.write(str(self.text.GetValue())+ '\n')
-            file.write('Loss function\n')
-            file.write(str(self.loss.GetStringSelection()) + '\n')
-            file.close()
-	    self.Close()
+		    file = open(self.config,'w')
+		    file.write('NN\n')
+		    file.write(self.net_choice.GetStringSelection() + '\n')
+		    file.write('Backbone\n')
+		    file.write(self.aug_choice.GetStringSelection() + '\n')
+		    file.write('Image net pre-trained weights\n')
+		    file.write(userfeedback_option + '\n')
+		    file.write('Single labels\n')
+		    file.write(str(self.userfeedback_images.GetStringSelection()) + '\n')
+		    file.write('Learning rate\n')
+		    file.write(str(self.text.GetValue())+ '\n')
+		    file.write('Loss function\n')
+		    file.write(str(self.loss.GetStringSelection()) + '\n')
+		    file.close()
+			self.Close()
         except:
             wx.MessageBox('Error in writing the configuration file, please check permissions \n '
                           'Configuration_file_error'
                           , 'Error!', wx.OK | wx.ICON_ERROR)
+
 
     def show(self,parent,gui_size,config):
         app = wx.App()
