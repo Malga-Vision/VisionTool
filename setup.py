@@ -62,7 +62,6 @@ setuptools.setup(
 'sklearn==0.0',
 'tensorboard==2.4.0',
 'tensorflow==2.4.0',
-'tensorboard-plugin-wit==2.4.0.post3',
 'termcolor==1.1.0',
 'threadpoolctl==2.1.0',
 'tifffile==2020.6.3',
