@@ -1,13 +1,30 @@
+"""
+    Source file name: interface_net.py  
+    
+    Description: this file contains the code to handle the GUI for setting the neural network preferences for svideo segmentation
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 
 import wx
 import sys
 import os
 
 class Open_interface(wx.Frame):
+
     def __init__(self, parent, gui_size,address):
-        """Constructor"""
+	
         wx.Frame.__init__(self, parent=parent)
-        self.address = address + '\\'
+        self.address = address + os.sep
         # variable initilization
         self.method = "automatic"
         self.config = self.address + 'Architecture_Preferences.txt'
