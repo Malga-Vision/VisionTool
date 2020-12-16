@@ -5,7 +5,7 @@
     
     Code adapted and modified from: 
     Alexander Mathis, Pranav Mamidanna, Kevin M Cury, Taiga Abe, Venkatesh N Murthy,Mackenzie Weygandt Mathis, and Matthias Bethge. Deeplabcut: markerless pose estimation
-    of user-defined body parts with deep learning. Nature neuroscience, 21(9):1281{1289, 2018.
+    of user-defined body parts with deep learning. Nature neuroscience, 21(9):1281{1289}, 2018.
     
     Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
     This program is free software: you can redistribute it and/or modify
