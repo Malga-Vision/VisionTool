@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 
 class training ():
     def __init__(self,address,file_annotation,image_folder,annotation_folder,bodyparts,train_flag,annotation_assistance):
-        self.address = address + '//'
+        self.address = address 
         self.train_flag = train_flag
         self.bodyparts = bodyparts
         self.annotation_assistance = annotation_assistance
@@ -35,8 +35,8 @@ class training ():
         self.image_folder = image_folder
         self.error = 0
         self.annotation_folder = annotation_folder
-        self.file_preferences = self.address + 'Architecture_Preferences.txt'
-        self.preferences_file =  self.address + os.sep + 'annotation_options.txt'
+        self.file_preferences = os.path.join(self.address,'Architecture_Preferences.txt')
+        self.preferences_file =  (self.address,'annotation_options.txt')
         try:
             file = open(self.preferences_file)
             self.pref = file.readlines()
