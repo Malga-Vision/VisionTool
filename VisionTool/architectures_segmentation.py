@@ -22,7 +22,6 @@ import wx
 import cv2
 from tensorflow.keras.optimizers import Adam
 import numpy as np
-
 import pandas as pd
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
@@ -320,7 +319,7 @@ class unet():
                                           'iou_score':metric})
 
 
-        OUTPUT = self.address + os.sep + 'prediction' + os.sep
+        OUTPUT = os.path.join(self.address,'prediction')
 
         try:
             os.mkdir(OUTPUT)
