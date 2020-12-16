@@ -61,7 +61,7 @@ setuptools.setup(
 'six==1.15.0',
 'sklearn==0.0',
 'tensorboard==2.2.0',
-'tensorflow==2.2.0',
+'tensorflow==2.4.0',
 'termcolor==1.1.0',
 'threadpoolctl==2.1.0',
 'tifffile==2020.6.3',
