@@ -1,3 +1,19 @@
+"""
+    Source file name: architectures_segmentation.py  
+    
+    Description: this file contains the code to perform data augmentation, neural network training and testing, annotation assistance
+    
+    Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3 of the License.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 import os
 import sys
 import random
@@ -91,14 +107,9 @@ class unet():
         # config = tf.ConfigProto(gpu_options=gpu_options)
         session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True,per_process_gpu_memory_fraction=0.6))
         session = tf.Session(config=session_config)
-        # OUTPUT = 'C:\\Users\\VitoPaoloPastore\\Desktop\\SEGMENTATION\\'
-        # OUTPUT = 'C:\\Users\\VitoPaoloPastore\\Documents\\TOM\\cropImage_4Kset\\'
-
-        addresss = self.address
-        # FOLDER WHERE THE RESULTS ARE SAVED
     
-        # FOLDER CONTAINING TRAINING IMAGES
-        # FOLDER CONTAINING TESTING IMAGES
+        addresss = self.address
+  
 
 
         warnings.filterwarnings('ignore', category=UserWarning, module='skimage')
@@ -128,7 +139,7 @@ class unet():
         for i in range(0, len(self.annotated)):
             files_original_name.append(self.dataFrame[self.dataFrame.columns[0]]._stat_axis[self.annotated[i]][7:])
 
-        img = imread(self.image_folder + '\\' + files_original_name[0])
+        img = imread(self.image_folder + os.sep + files_original_name[0])
 
         #self.markerSize = np.min([round(img.shape[0] / self.IMG_WIDTH), round(img.shape[1] / self.IMG_HEIGHT)]) + 3
         self.markerSize = 13
@@ -138,7 +149,7 @@ class unet():
         New_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH), dtype=np.int)
 
         for l in range(0,len(self.annotated)):
-            img = imread(self.image_folder + '\\' + files_original_name[l])
+            img = imread(self.image_folder + os.sep + files_original_name[l])
 
             # mask_ = np.zeros((np.shape(img)[0],np.shape(img)[1],self.num_bodyparts))
             mask_ = np.zeros((np.shape(img)[0],np.shape(img)[1],self.num_bodyparts))
@@ -309,14 +320,13 @@ class unet():
                                           'iou_score':metric})
 
 
-        OUTPUT = self.address + '\\prediction\\'
+        OUTPUT = self.address + os.sep + 'prediction' + os.sep
 
         try:
             os.mkdir(OUTPUT)
 
         except:
             pass
-        #TEST_PATH = addresss + 'TEST\\'
         files = os.listdir(self.image_folder)
         files_original_name = list()
 
@@ -349,7 +359,7 @@ class unet():
 
                         # this is in case we want to evaluate the images contained in a folder
                         for l in files:
-                            img = imread(self.image_folder + '\\' + l)[:, :, :self.IMG_CHANNELS]
+                            img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
                             img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
                             self.X_test[counter] = img
                             counter += 1
@@ -361,7 +371,7 @@ class unet():
                 self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
 
                 for l in files:
-                    img = imread(self.image_folder + '\\' + l)[:, :, :self.IMG_CHANNELS]
+                    img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
                     img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
                     self.X_test[counter] = img
                     counter += 1
@@ -379,7 +389,7 @@ class unet():
 
             for l in range(0,len(files)):
                 if l in self.frame_selected_for_annotation:
-                    img = imread(self.image_folder + '\\' + files[l])[:, :, :self.IMG_CHANNELS]
+                    img = imread(self.image_folder + os.sep + files[l])[:, :, :self.IMG_CHANNELS]
                     img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
                     self.X_test[counter] = img
                     counter += 1
