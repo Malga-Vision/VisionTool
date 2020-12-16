@@ -14,7 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-
 import wx
 import sys
 import os
@@ -24,10 +23,10 @@ class Open_interface(wx.Frame):
     def __init__(self, parent, gui_size,address):
 	
         wx.Frame.__init__(self, parent=parent)
-        self.address = address + os.sep
+        self.address = address
         # variable initilization
         self.method = "automatic"
-        self.config = self.address + 'Architecture_Preferences.txt'
+        self.config = os.path.join(self.address + 'Architecture_Preferences.txt')
         
         # design the panel
         self.sizer = wx.GridBagSizer(5, 5)
