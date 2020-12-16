@@ -26,7 +26,7 @@ class Open_interface(wx.Frame):
         self.address = address
         # variable initilization
         self.method = "automatic"
-        self.config = os.path.join(self.address + 'Architecture_Preferences.txt')
+        self.config = os.path.join(self.address , 'Architecture_Preferences.txt')
         
         # design the panel
         self.sizer = wx.GridBagSizer(5, 5)
