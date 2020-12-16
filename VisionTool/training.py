@@ -36,7 +36,7 @@ class training ():
         self.error = 0
         self.annotation_folder = annotation_folder
         self.file_preferences = os.path.join(self.address,'Architecture_Preferences.txt')
-        self.preferences_file =  (self.address,'annotation_options.txt')
+        self.preferences_file =  os.path.join(self.address,'annotation_options.txt')
         try:
             file = open(self.preferences_file)
             self.pref = file.readlines()
