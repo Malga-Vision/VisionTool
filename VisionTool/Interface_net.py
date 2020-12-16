@@ -14,16 +14,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
 import wx
 import sys
 import os
 
 class Open_interface(wx.Frame):
-
     def __init__(self, parent, gui_size,address):
-	
+        """Constructor"""
         wx.Frame.__init__(self, parent=parent)
-        self.address = address
+        self.address = address + '\\'
         # variable initilization
         self.method = "automatic"
         self.config = os.path.join(self.address , 'Architecture_Preferences.txt')
@@ -96,7 +96,7 @@ class Open_interface(wx.Frame):
         self.text =  wx.TextCtrl(self, id=wx.ID_ANY)
         self.text.SetValue("0.001")
 
-        self.Batch_text = wx.StaticText(self, label="Learning rate")
+        self.Batch_text = wx.StaticText(self, label="Batch Size")
 
         self.Batch =  wx.TextCtrl(self, id=wx.ID_ANY)
         self.Batch.SetValue("1")
@@ -194,29 +194,26 @@ class Open_interface(wx.Frame):
 
     def create_training_dataset(self,event):
         userfeedback_option = self.userfeedback.GetStringSelection()
-	
         try:
-		file = open(self.config,'w')
-		file.write('NN\n')
-		file.write(self.net_choice.GetStringSelection() + '\n')
-		file.write('Backbone\n')
-		file.write(self.aug_choice.GetStringSelection() + '\n')
-		file.write('Image net pre-trained weights\n')
-		file.write(userfeedback_option + '\n')
-		file.write('Single labels\n')
-		file.write(str(self.userfeedback_images.GetStringSelection()) + '\n')
-		file.write('Learning rate\n')
-		file.write(str(self.text.GetValue())+ '\n')
-		file.write('Loss function\n')
-		file.write(str(self.loss.GetStringSelection()) + '\n')
-		file.close()
-		Self.Close()
-
+            file = open(self.config,'w')
+            file.write('NN\n')
+            file.write(self.net_choice.GetStringSelection() + '\n')
+            file.write('Backbone\n')
+            file.write(self.aug_choice.GetStringSelection() + '\n')
+            file.write('Image net pre-trained weights\n')
+            file.write(userfeedback_option + '\n')
+            file.write('Single labels\n')
+            file.write(str(self.userfeedback_images.GetStringSelection()) + '\n')
+            file.write('Learning rate\n')
+            file.write(str(self.text.GetValue())+ '\n')
+            file.write('Loss function\n')
+            file.write(str(self.loss.GetStringSelection()) + '\n')
+            file.close()
+            self.Close()
         except:
             wx.MessageBox('Error in writing the configuration file, please check permissions \n '
                           'Configuration_file_error'
                           , 'Error!', wx.OK | wx.ICON_ERROR)
-
 
     def show(self,parent,gui_size,config):
         app = wx.App()
