@@ -209,6 +209,7 @@ class Open_interface(wx.Frame):
             file.write('Loss function\n')
             file.write(str(self.loss.GetStringSelection()) + '\n')
             file.close()
+	    self.Close(
         except:
             wx.MessageBox('Error in writing the configuration file, please check permissions \n '
                           'Configuration_file_error'
