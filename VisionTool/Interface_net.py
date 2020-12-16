@@ -194,6 +194,7 @@ class Open_interface(wx.Frame):
 
     def create_training_dataset(self,event):
         userfeedback_option = self.userfeedback.GetStringSelection()
+	
         try:
 		file = open(self.config,'w')
 		file.write('NN\n')
@@ -210,6 +211,7 @@ class Open_interface(wx.Frame):
 		file.write(str(self.loss.GetStringSelection()) + '\n')
 		file.close()
 		Self.Close()
+
         except:
             wx.MessageBox('Error in writing the configuration file, please check permissions \n '
                           'Configuration_file_error'
