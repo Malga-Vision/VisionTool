@@ -23,7 +23,7 @@ class Open_interface(wx.Frame):
     def __init__(self, parent, gui_size,address):
         """Constructor"""
         wx.Frame.__init__(self, parent=parent)
-        self.address = address + '\\'
+        self.address = address 
         # variable initilization
         self.method = "automatic"
         self.config = os.path.join(self.address , 'Architecture_Preferences.txt')
