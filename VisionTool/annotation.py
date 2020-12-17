@@ -204,7 +204,7 @@ class Label_frames(wx.Panel):
     def check_and_train(self,event):
         self.address_proj = os.path.dirname(self.config)
 
-        self.file_preferences = self.address_proj + '\\Architecture_Preferences.txt'
+        self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
         self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
