@@ -367,7 +367,7 @@ class Label_frames(wx.Panel):
 
 
     def check_existence_annoatation(self):
-        preferences_file = os.path.dirname(self.config) + + os.sep + 'annotation_options.txt'
+        preferences_file = os.path.dirname(self.config)  + os.sep + 'annotation_options.txt'
         if not os.path.isfile(preferences_file):
             self.does_annotation_exist.SetValue(False)
             return
