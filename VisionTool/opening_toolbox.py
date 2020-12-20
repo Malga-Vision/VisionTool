@@ -617,21 +617,42 @@ class MainFrame(wx.Frame):
 
     def next_labeled_check(self,event):
         if self.next_labeled.GetValue():
+            self.next.Enable(True)
             self.next_labeled_annotated.SetValue(0)
+            self.last_iter_value = self.iter
+            self.iter = 0
+            self.last_counter_Frames_value = self.counter_frames
             self.counter_frames = 0
         else:
             self.next_labeled.SetValue(0)
+            if self.counter_frames == len(self.frame_selected_for_annotation):
+                self.counter_frames = 0
+                self.next.Enable(True)
+            else:
+                self.counter_frames = self.last_counter_Frames_value
+                if self.iter ==0:
+                    self.iter = self.last_iter_value
+
 
 
     def next_labeled_annotated_check(self, event):
 
         if self.next_labeled_annotated.GetValue():
-
+            self.next.Enable(True)
             self.next_labeled.SetValue(0)
+            self.last_counter_Frames_value = self.counter_frames
+            self.last_iter_value = self.iter
+            self.iter = 0
             self.counter_frames = 0
         else:
             self.next_labeled_annotated.SetValue(0)
-
+            if self.counter_frames == len(self.frame_selected_for_annotation_auto):
+                self.counter_frames = 0
+                self.next.Enable(True)
+            else:
+                self.counter_frames = self.last_counter_Frames_value
+                if self.iter ==0:
+                    self.iter = self.last_iter_value
 
     def zoomButton(self, event):
         if self.zoom.GetValue() == True:
@@ -874,8 +895,8 @@ class MainFrame(wx.Frame):
         #  Checks for the last image and disables the Next button
         if len(self.index) - self.iter == 1:
             self.next.Enable(False)
-            self.next_labeled.Enable(False)
-            self.next_labeled_annotated.Enable(False)
+            # self.next_labeled.Enable(False)
+            # self.next_labeled_annotated.Enable(False)
 
             return
         self.prev.Enable(True)
@@ -890,8 +911,8 @@ class MainFrame(wx.Frame):
 
             if self.counter_frames == len(self.frame_selected_for_annotation_auto):
                 self.next.Enable(False)
-                self.next_labeled.Enable(False)
-                self.next_labeled_annotated.Enable(False)
+                # self.next_labeled.Enable(False)
+                # self.next_labeled_annotated.Enable(False)
                 return
         # Checks if zoom/pan button is ON
         MainFrame.updateZoomPan(self)
