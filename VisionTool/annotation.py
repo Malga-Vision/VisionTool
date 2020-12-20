@@ -378,7 +378,7 @@ class Label_frames(wx.Panel):
         self.title_video = self.video_list_with_address[self.index_video][
                            self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
 
-        self.filename = self.address  + os.sep + 'Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
+        self.filename = self.address  + os.sep + "Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
 
         if os.path.isfile(self.filename):
             self.does_annotation_exist.SetValue(True)
