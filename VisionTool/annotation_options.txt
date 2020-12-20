@@ -1,0 +1,12 @@
+Name_user
+test
+Marker Size
+10
+Alpha
+0.7
+Color map
+inferno
+Bodyparts
+h
+k
+a
