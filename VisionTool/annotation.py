@@ -220,7 +220,7 @@ class Label_frames(wx.Panel):
 
         self.address_proj = os.path.dirname(self.config)
 
-        self.file_preferences = self.address_proj + '\\Architecture_Preferences.txt'
+        self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
         self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
@@ -229,7 +229,7 @@ class Label_frames(wx.Panel):
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
         else:
-            if not os.path.isfile(self.address + '//Unet.h5'):
+            if not os.path.isfile(self.address + os.sep + 'Unet.h5'):
                 wx.MessageBox('No Trained network found!', 'Trained model missing', wx.OK | wx.ICON_INFORMATION)
                 return
             else:
@@ -257,7 +257,7 @@ class Label_frames(wx.Panel):
 
             pathname = fileDialog.GetPaths()
 
-            preferences_file = os.path.dirname(self.config) + '//annotation_options.txt'
+            preferences_file = os.path.dirname(self.config) + os.sep + 'annotation_options.txt'
             if not os.path.isfile(preferences_file):
                 wx.MessageBox(
                     'Error in reading the annotation options'
@@ -272,7 +272,7 @@ class Label_frames(wx.Panel):
             self.title_video = self.video_list_with_address[self.index_video][
                                self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
             try:
-                self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
+                self.filename = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
                 copyfile(pathname[0],pathname[0][:-4] + 'original' + '.csv')
                 os.rename(pathname[0], self.filename)
             except:
@@ -367,7 +367,7 @@ class Label_frames(wx.Panel):
 
 
     def check_existence_annoatation(self):
-        preferences_file = os.path.dirname(self.config) + '//annotation_options.txt'
+        preferences_file = os.path.dirname(self.config) + + os.sep + 'annotation_options.txt'
         if not os.path.isfile(preferences_file):
             self.does_annotation_exist.SetValue(False)
             return
@@ -378,7 +378,7 @@ class Label_frames(wx.Panel):
         self.title_video = self.video_list_with_address[self.index_video][
                            self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
 
-        self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
+        self.filename = self.address  + os.sep + 'Annotation_" + self.title_video + '_' + self.scorer[:-1] + '.csv'
 
         if os.path.isfile(self.filename):
             self.does_annotation_exist.SetValue(True)
