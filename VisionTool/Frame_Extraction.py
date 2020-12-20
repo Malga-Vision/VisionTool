@@ -166,11 +166,14 @@ class extract_Frames(wx.Panel):
             count += 1
             success, image = self.cap.read()
         while success and count >= start and count < end:
-            success, image = self.cap.read()
-            progress.Update(int(count / len(self.frames_id)) * 100)
-            cv2.imwrite(self.address + os.sep + self.name + os.sep + 'frame_' + ("{:04d}".format(count)) + '.png',
+			cv2.imwrite(self.address + os.sep + self.name + os.sep + 'frame_' + ("{:04d}".format(count)) + '.png',
                         image)
+			progress.Update(int(count / len(self.frames_id)) * 100)
+
             count += 1
+
+            success, image = self.cap.read()
+           
 
         progress.Destroy()
 
