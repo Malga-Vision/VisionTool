@@ -25,8 +25,7 @@ from VisionTool import opening_toolbox
 import cv2
 from VisionTool.Frame_Extraction import *
 from VisionTool.Interface_net import *
-from VisionTool.
-import *
+from VisionTool.training import *
 from shutil import copyfile
 import pandas as pd
 
@@ -214,7 +213,7 @@ class Label_frames(wx.Panel):
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
         else:
-            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name + 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
+            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name , 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
             pass
 
     def check_and_test(self,event):
