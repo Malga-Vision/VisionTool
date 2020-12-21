@@ -2,8 +2,7 @@
     Source file name: architectures_segmentation.py  
     
     Description: this file contains the code to perform data augmentation, neural network training and testing, annotation assistance
-    
-    """
+
     Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
