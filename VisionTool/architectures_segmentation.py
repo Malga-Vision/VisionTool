@@ -3,6 +3,7 @@
     
     Description: this file contains the code to perform data augmentation, neural network training and testing, annotation assistance
     
+    """
     Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -75,9 +76,13 @@ class unet():
                 wx.MessageBox('Annotations reading error\n '
                               'Annotation not found'
                               , 'Error!', wx.OK | wx.ICON_ERROR)
+
             except:
-                  self.app = wx.App()
-                  self.app.MainLoop()
+                self.app = wx.App()
+                self.app.MainLoop()
+                wx.MessageBox('Annotations reading error\n '
+                              'Annotation not found'
+                              , 'Error!', wx.OK | wx.ICON_ERROR)
             return
 
         self.annotated = np.where(np.isnan(self.dataFrame.iloc[:, 0].values) == False)[0]
@@ -343,18 +348,16 @@ class unet():
         counter = 0
 
         if self.annotation_assistance==0:
-			try:
+			
         # do I only want to predict the videos not-annotated frames?
-            nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
-                                        wx.YES_NO | wx.ICON_INFORMATION)
-
+            try:
+                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
+                                            wx.YES_NO | wx.ICON_INFORMATION)
             except:
-                  self.app = wx.App()
-                  self.app.MainLoop()
-                  nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
-                                        wx.YES_NO | wx.ICON_INFORMATION)
-
-                return
+                self.app = wx.App()
+                self.app.MainLoop()
+                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
+                                    wx.YES_NO | wx.ICON_INFORMATION)
             if nextFilemsg == 2:
 
                 with wx.DirDialog(self, "Select folder containing (only!) frames to predict") as fileDialog:
@@ -538,4 +541,5 @@ class unet():
                            int(round(self.markerSize * (2 ** 4))), self.colors[i]*255, thickness=-1, shift=4)
             cv2.imwrite(os.path.join(OUTPUT, name),
                         image)
+
 
