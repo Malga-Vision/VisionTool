@@ -80,7 +80,7 @@ class test ():
             else:
                 self.upload_new_Videos()
 
-            Frame_selection(None, os.path.dirname(test.config_file_text) + os.sep + 'annotation_options.txt');
+            Frame_selection(None, os.path.dirname(self.config_file_text) + os.sep + 'annotation_options.txt');
 
     def upload_new_Videos(self):
 
