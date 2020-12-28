@@ -31,6 +31,7 @@ import pandas as pd
 import VisionTool.opening_toolbox
 from VisionTool.annotation import *
 from shutil import copyfile
+from VisionTool.create_new_project  import *
 
 class test ():
 
