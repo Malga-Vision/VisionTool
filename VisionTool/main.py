@@ -1,5 +1,4 @@
 import wx
-popopod3Fg#Gg
 from VisionTool.create_new_project  import *
 import os
 import random
