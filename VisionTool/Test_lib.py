@@ -87,7 +87,7 @@ class test ():
         with wx.FileDialog(None, "Select videos",
                            wildcard='select video files (*.mp4;*.avi;*.mpeg4)|*.mp4;*.avi;*.mpeg4|''mp4 files (*.mp4)|*.mp4|'
                                     'avi files (*.avi)|*.avi|' 'mpeg4 (*.mpeg4)|*.mpeg4',
-                           defaultDir  = self.CONFIG_PATH,style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE) as fileDialog:
+                           defaultDir  = self.CONFIG_PATH + os.sep,style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
