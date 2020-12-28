@@ -33,7 +33,7 @@ from VisionTool.annotation import *
 from shutil import copyfile
 
 
-from create_new_project  import *
+from VisionTool.create_new_project  import *
 
 class test ():
 
