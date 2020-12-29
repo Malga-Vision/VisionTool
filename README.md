@@ -23,9 +23,84 @@ VisionTool menu consists of two different submenus. The File Menu allows to perf
 To create a new project, select the submenu File and click on the menu tab New Project, or press Ctrl+N. A browse directory win
 ow will pop-up asking where do you want to save the new project. 
 
-![Picture2](https://user-images.githubusercontent.com/51142446/103312970-ecf6be80-4a1e-11eb-8cf8-a93491a66165.png)
+![Picture2](https://user-images.githubusercontent.com/51142446/103316757-c8ecaa80-4a29-11eb-9015-a0b9dd36c479.png)
 
 *Figure 2. VisionTool’s File menu*
 
 ### Open an existing project
 
+To open an existing project, simply click on the menu tab Open Existing Project, or press Ctrl+O. A browse directory window will pop-up asking to select the folder containing a project. 
+
+### Quitting VisionTool
+
+To end VisionTool execution, just click on the closing icon in the GUI window, click on the menu tab quit or press Ctrl+Q. 
+
+## Features extraction Tool 
+
+VisionTool offers the possibility to perform pose estimation from action videos. Click on the menu tab Features to add new videos to the created project. If The project already contains videos, a message box will pop-up and ask if you wish to add new videos to the existing ones, or simply performing the analysis on the already imported ones (see Figure 3). 
+
+![picture 3](https://user-images.githubusercontent.com/51142446/103316642-5ed40580-4a29-11eb-9f78-d58235116a10.png)
+
+
+*Figure 3. Adding new videos* 
+
+### Features extraction Interface
+
+Figure 4 shows VisionTool’s GUI for frames features extraction. The Annotations Options box allows the user to read the number of videos frames, and to select the start and end frame to be used for frame extraction. The Frames selection box allows to select the number of frames to annotate, as well as the number of frames to be automatically annotated within the annotation assistance tool (see section Annotations assistance). 
+ 
+![picture4](https://user-images.githubusercontent.com/51142446/103316641-5e3b6f00-4a29-11eb-8508-db78045ab0b5.PNG)
+
+*Figure 4. Features extraction GUI*
+
+### Importing from DeepLabCut
+
+VisionTool is completely compatible with DeepLabCut, from which it inherited the backbone for frames annotation. If the user performed his annotations with DeepLabCut, there is no need to annotate again the same frames in VisionTool. Using the button Import from DeepLabCut (purple square in Fig. 4), it is possible to select the csv file corresponding to the annotations saved with DeepLabCut, and the tool will automatically convert it in the format needed for training, testing or performing automatic annotation. The original csv file, is stored as filenameoriginal.csv, where filename is the name used for the csv file as outputted by DeepLabCut. 
+
+### Neural Network parameters setting 
+
+To open the neural network parameters setting interface, click on the NN evaluation preferences button (dark blue square in Fig. 4). 
+
+![picture 5](https://user-images.githubusercontent.com/51142446/103317145-ec642500-4a2a-11eb-8e50-1802b220b7b5.PNG)
+*Figure 5. Neural network parameters setting GUI*
+VisionTool allows to choose between 4 different neural networks to perform features extraction (i.e., UNet, LinkNet, Pyramid Scene Parsing Network (PSPNet) and Feature Pyramid Network (FPN)). These networks include an encoder module coupled to a decoder one. The toolbox offers 30 different neural networks models to be adopted as backbone for the encoding of the 4 segmentation networks. 
+To set the neural network and the backbone, simply select the desired model from the dedicated menu. The user can also set the learning rate value, the batch size and choose between two different loss functions for the training process:
+-	Weighted categorical cross-entropy;
+-	Weighted dice-loss. 
+The user can adopt ImageNet pretrained neural networks or train from scratch, selecting the correspondent option in the dedicated radio-button. Finally, an option allows to save the single label images with the pixel intensity corresponding to the confidence of estimation for that specific pixel. 
+
+### Frame Annotation 
+
+To proceed with frame annotation, click on the label frame button (red square in Fig. 4). A confirmation message will pop-up. After confirmation, the toolbox asks for annotation preferences through a dedicated interface. 
+
+![picture 6](https://user-images.githubusercontent.com/51142446/103317218-26cdc200-4a2b-11eb-8b93-ce714213023c.PNG)
+
+*Figure 6. Annotation preferences input GUI*
+
+For each video of a project, the annotation preferences interface is showed only at initialization. However, the toolbox will ask if the user wants to change and update preferences at every time. This process includes adding new labels (i.e., interesting new points). 
+Please, insert the bodyparts as a list, with a ‘;’ as delimiter character (e.g., ankle; hip; knee; shoulder). The MarkerSize will be used to plot the annotation points in the next interface, according to the indicated colormap and alpha value. Finally, the name_user will be used to name the output annotation file, so that different users can have separated annotation file. 
+Click on finish, and the interface will automatically close. At this stage, the annotation interface will pop-up. 
+
+![picture7](https://user-images.githubusercontent.com/51142446/103317261-42d16380-4a2b-11eb-940e-bc645fda97df.PNG)
+
+*Figure 7. VisionTool annotation interface* 
+
+Here the user can annotate the interesting points (previously indicated in the preferences interface) using the mouse. Each annotation point can be drag and moved if necessary. The checkbox annot. only can be used to only view the frames that were randomly extracted to be manually annotated (number indicated in interface of Fig.4). If such number has not been indicated, the option will not be enabled. The checkbox annot. auto only can be used to only view the frames that will be automatically labeled by a neural network (again, if the option has been selected in Fig.4 at the moment of frames extraction). 
+If the user did not indicate the number of frames in the previous interface, simply closing the annotation interface and inputting the data in the main GUI with a new frame extraction will enable such options. If no checkbox is selected, all the sequence of frames can be viewed in the interface. 
+Zoom button allows to increase or decrease view zooming. Save button is necessary to save the annotations in an excel file. 
+Help opens a short explanation of the annotation process, while home cancel the results of zooming. Quit closes the annotation interface.
+Help in annotation invokes the automatic annotation assistance and will only be available if the number of frames to be automatically annotated has been set in the main GUI. 
+When the help in annotation button is pressed, the interface will freeze until the training of the assistance neural network will be finished. At this stage, it is possible to view the results of such procedure with a different color map with respect to the one corresponding to manual annotation (see Fig. 8). The resulting labeled points can be moved (if the results were not correct), so that in the end, a complete set of annotated images is available. Press cancel to reset the results provided by the automatic annotation tool.
+
+### Neural Network Training
+
+After a set of frames has been annotated either manually or with the automatic procedure and a neural network and a backbone have been selected using the dedicated interface, it is finally possible to train the architecture for features extraction.
+Simply press the start training (yellow button in Fig.4) button on the main GUI. After training is completed, the toolbox will perform prediction on test data (i.e., the frames without any annotation either manually or automatically performed).  
+
+
+### Neural Network Testing
+
+If a model has already been trained, and the user wishes to predict frames, he can press the button start testing (light blue button in Fig.4).  The toolbox will check the existence of a trained architecture. 
+
+### Output 
+
+VisionTool’s output is an excel file with the predicted 2d joints coordinates and the confidence of prediction. If the option Single Label Image Saving is checked in the neural network parameters setting interface (see Fig. 5), an image per each label will be saved.  In such images, intensity pixel corresponds to the confidence of prediction for each specific label. 
