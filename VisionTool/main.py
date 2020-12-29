@@ -59,9 +59,7 @@ class Frame_main(wx.Frame):
         # fileMenu.Append(wx.ID_SAVE, '&Save')
         fileMenu.AppendSeparator()
 
-        imp = wx.Menu()
-        imp.Append(wx.ID_ANY, 'Import new architecture')
-        fileMenu.Append(wx.ID_ANY, 'I&mport', imp)
+       
 
         qmi = wx.MenuItem(fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W')
         fileMenu.Append(qmi)
