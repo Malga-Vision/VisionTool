@@ -1,14 +1,95 @@
 # VisionTool
 VisionTool: a toolbox for semantic features extraction 
+
 ## Introduction
 VisionTool is a python toolbox for pose estimation on videos containing actions. It is powered with a simple and intuititive Graphical User Interface (GUI) to allow a complete analysis from annotation to joint position estimation.
+
+## Installation
+
+To install VisionTool you can use  
+
+**pip install -e git+https://github.com/Malga-Vision/VisionTool.git#egg=VisionTool**
+
+Alternatively, you can download the code folder, and install the requirements reported in file requirements.txt
+
+### Operative System supported
+
+VisionTool is compatible and been tested on Linux, Windows and MacOS. 
+If you are using Linux, you may need to install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
+
+### VisionTool running
+
+To open VisionTool main GUI, open python and use the following lines of code:
+
+``` 
+    From VisionTool import main
+    main.main()
+```
+If you are using MacOS, open pythonw. 
+
+Alternatively, you can use a Python IDE and run the file *main.py*. 
+
+### Tests 
+
+**VisionTool is expected to be run using the main GUI**.
+However, we uploaded a set of tests for VisionTool that can be run outside of the main GUI, as single code instructions. The test.py file contained in test folder provide an example of analysis for a sample video included in the repository and automatically downloaded after installation. 
+In detail, we uploaded a set of possible annotations so that training and testing may be directly possible. 
+First, you need to import the Test_lib module from VisionTool, so open python and then run:
+
+```
+From VisionTool.Test_lib import test
+```
+
+The test.py file:
+
+``` 
+# initialize the test object 
+
+test = test()
+
+# create a new project 
+
+test.new_project_routine()
+
+# or open an existing one  (choose one or the other)
+
+test.open_project()
+
+# add videos to the project, or load the ones already added
+
+test.Load_Videos()
+
+# set preferences for annotation 
+
+Frame_selection(None, os.path.dirname(test.config_file_text) + os.sep + 'annotation_options.txt')
+
+# if you are using the sample_video uploaded in the repository, use the next line of code to download existing annotation for testing  
+test.load_testing_annotation(test.config_file_text)
+
+# needed for proceeding with manual or automatic annotation, code to handle the rest of operations 
+
+test.annotate(0,test.config_file_text)
+
+# set the preferences for the neural network prediction 
+
+test.preferences_annotation()
+
+# perform training 
+test.check_and_train()
+
+# view results
+test.view_annotation()
+
+``` 
+
+As stated before, these tests are only to provide a fast example of VisionTool working, however we recommend to run the toolbox using the main.py module. 
+
+## VisionTool GUI
+VisionTool’s main GUI shows two different interfaces. The first one “Features_Extraction” can be used to perform annotation, training and testing on an imported set of videos. The second one “Pose Estimation” includes the implementation of neural networks architectures to perform action recognition. In its first release, only features extraction is available. Future releases will be focus on the implementation of an actual action recognition submodule including the latest architectures used in the scientific community for the solution of recognition problems.
 
 ![Picture1](https://user-images.githubusercontent.com/51142446/103312491-87ee9900-4a1d-11eb-9781-595327da4d0a.png)
 
 *Figure 1. VisionTool main GUI*
-
-## VisionTool GUI
-VisionTool’s main GUI shows two different interfaces. The first one “Features_Extraction” can be used to perform annotation, training and testing on an imported set of videos. The second one “Pose Estimation” includes the implementation of neural networks architectures to perform action recognition. In its first release, only features extraction is available. Future releases will be focus on the implementation of an actual action recognition submodule including the latest architectures used in the scientific community for the solution of recognition problems.
 
 ## Preliminary Operations 
 
