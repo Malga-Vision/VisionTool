@@ -18,6 +18,7 @@ import os
 import sys
 import random
 import warnings
+import copy
 import wx
 import cv2
 from tensorflow.keras.optimizers import Adam
@@ -139,6 +140,10 @@ class unet():
             files_original_name.append(self.dataFrame[self.dataFrame.columns[0]]._stat_axis[self.annotated[i]][7:])
 
         img = imread(self.image_folder + os.sep + files_original_name[0])
+
+
+        self.file_name_for_prediction_confidence = files_original_name;
+
 
         #self.markerSize = np.min([round(img.shape[0] / self.IMG_WIDTH), round(img.shape[1] / self.IMG_HEIGHT)]) + 3
         self.markerSize = 13
@@ -279,7 +284,7 @@ class unet():
         self.model.compile(optimizer = RMSprop(lr=self.learning_rate), loss=loss,metrics=[metric])
         earlystopper = EarlyStopping(patience=6, verbose=1)
         #
-        checkpointer = ModelCheckpoint(self.address + 'Unet.h5', verbose=1, save_best_only=True)
+        checkpointer = ModelCheckpoint(os.path.join(self.address , 'Unet.h5'), verbose=1, save_best_only=True)
         reduce_lr = keras.callbacks.LearningRateScheduler(self.lr_scheduler)
 
         #
@@ -314,7 +319,7 @@ class unet():
 
         metric = segmentation_models.metrics.IOUScore(class_weights=weights,per_image=True)
 
-        model = load_model(self.address + 'Unet.h5',
+        model = load_model(os.path.join(self.address , 'Unet.h5'),
                            custom_objects={'loss': loss, 'dice_loss': segmentation_models.losses.DiceLoss,
                                           'iou_score':metric})
 
@@ -340,8 +345,15 @@ class unet():
 
         if self.annotation_assistance==0:
         # do I only want to predict the videos not-annotated frames?
-            nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
-                                        wx.YES_NO | wx.ICON_INFORMATION)
+            try:
+                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
+                                            wx.YES_NO | wx.ICON_INFORMATION)
+            except:
+                self.app = wx.App()
+                self.app.MainLoop()
+                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?',
+                                            'Choose your option?',
+                                            wx.YES_NO | wx.ICON_INFORMATION)
             if nextFilemsg == 2:
 
                 with wx.DirDialog(self, "Select folder containing (only!) frames to predict") as fileDialog:
@@ -418,64 +430,101 @@ class unet():
         preds_test_t = preds_test
         # Create list of upsampled test masks
         preds_test_upsampled = []
+        address_single_labels = os.path.join(self.address, 'Single_labels')
 
+        try:
+            os.mkdir(address_single_labels)
+        except:
+            pass
 
-
-        if self.single_labels == 'yes':
-        #PREDICT AND SAVE SINGLE LABELS IMAGES
+        if self.single_labels == 'Yes':
+            # PREDICT AND SAVE SINGLE LABELS IMAGES
             for i in range(0, len(preds_test)):
+                if i in self.annotated:
+                    continue
+                img = imread(self.image_folder + files[i])
+                sizes_test = np.shape(img)[:-1]
+                for j in range(0, self.num_bodyparts + 1):
+                    preds_test_upsampled = resize(np.squeeze(preds_test_t[i, :, :, j]),
+                                                  (sizes_test[0], sizes_test[1]),
+                                                  mode='constant', preserve_range=True)
+                    preds_test_upsampled = (preds_test_upsampled * 255).astype(int)
+                    cv2.imwrite(address_single_labels + os.sep + ("{:02d}".format(j)) + files[i], preds_test_upsampled)
+
+        #let us create a dataframe to store prediction confidence
+
+        imlist = os.listdir(self.image_folder)
+        self.index = np.sort(imlist)
+        a = np.empty((len(self.index), 3,))
+        self.dataFrame3 = None
+        a[:] = np.nan
+        self.scorer = 'user'
+        for bodypart in self.bodyparts:
+            index = pd.MultiIndex.from_product([[self.scorer], [bodypart], ['x', 'y', 'confidence']],
+                                               names=['scorer', 'bodyparts', 'coords'])
+            frame = pd.DataFrame(a, columns=index, index=imlist)
+            self.dataFrame3 = pd.concat([self.dataFrame3, frame], axis=1)
+        num_columns = len(self.dataFrame3.columns)
+
+
+        # if this is a regular testing, all of the images (but the annotated ones) have to be analyzed
+        if self.annotation_assistance == 0:
+            for i in range(0, len(preds_test)):
+
+                if i in self.annotated:
+                    continue
+                results = np.zeros((self.num_bodyparts*2))
+                results_plus_conf = np.zeros((self.num_bodyparts*3))
+
+                #here to update dataframe with annotations
                 img = imread(self.image_folder + files[i])
                 sizes_test = np.shape(img)[:-1]
                 for j in range(0,self.num_bodyparts+1):
-                    preds_test_upsampled.append(resize(np.squeeze(preds_test_t[i,:,:,j]),
+                    if j==0: continue
+
+                    preds_test_upsampled = resize(np.squeeze(preds_test_t[i,:,:,j]),
                                                        (sizes_test[0], sizes_test[1]),
-                                                       mode='constant', preserve_range=True))
-                    preds_test_upsampled[j+i*(self.num_bodyparts+1)] = (preds_test_upsampled[j+i*(self.num_bodyparts+1)] * 255).astype(int)
-                    cv2.imwrite(OUTPUT + ("{:02d}".format(j)) + files[i], preds_test_upsampled[j+i*(self.num_bodyparts+1)])
+                                                       mode='constant', preserve_range=True)
+                    preds_test_upsampled= (preds_test_upsampled * 255).astype(np.uint8)
+                    results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
+                    results_plus_conf[(j - 1) * 2:(j - 1) * 2 + 3] = self.compute_confidence(preds_test_upsampled)
+                    self.plot_annotation(img,results,files[i],OUTPUT)
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results_plus_conf[(j - 1) * 2]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results_plus_conf[(j - 1) * 2 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[i] = -results_plus_conf[(j - 1) * 3]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[i] = results_plus_conf[
+                        (j - 1) * 3 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[i] = results_plus_conf[
+                        (j - 1) * 3 + 2]
 
         else:
-            # if this is a regular testing, all of the images (but the annotated ones) have to be analyzed
-            if self.annotation_assistance == 0:
-                for i in range(0, len(preds_test)):
+            #if annotation assistance is requested, we only want to annotate the random frames extracted by the user
+            for i in range(0, len(preds_test)):
+                results = np.zeros((self.num_bodyparts * 2))
+                # here to update dataframe with annotations
+                img = imread(self.image_folder + files[self.frame_selected_for_annotation[i]])
+                sizes_test = np.shape(img)[:-1]
+                for j in range(0, self.num_bodyparts + 1):
+                    if j == 0: continue
 
-                    if i in self.annotated:
-                        continue
-                    results = np.zeros((self.num_bodyparts*2))
-                    #here to update dataframe with annotations
-                    img = imread(self.image_folder + files[i])
-                    sizes_test = np.shape(img)[:-1]
-                    for j in range(0,self.num_bodyparts+1):
-                        if j==0: continue
+                    preds_test_upsampled = resize(np.squeeze(preds_test_t[i, :, :, j]),
+                                                  (sizes_test[0], sizes_test[1]),
+                                                  mode='constant', preserve_range=True)
+                    preds_test_upsampled = (preds_test_upsampled * 255).astype(np.uint8)
+                    results[(j - 1) * 2:(j - 1) * 2 + 2] = self.prediction_to_annotation(preds_test_upsampled)
+                    results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
+                    self.plot_annotation(img, results, files[i], OUTPUT)
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results[(j - 1) * 2]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results[(j - 1) * 2 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[i] = -results_plus_conf[(j - 1) * 3]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[i] = results_plus_conf[
+                        (j - 1) * 3 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[i] = results_plus_conf[
+                        (j - 1) * 3 + 2]
 
-                        preds_test_upsampled = resize(np.squeeze(preds_test_t[i,:,:,j]),
-                                                           (sizes_test[0], sizes_test[1]),
-                                                           mode='constant', preserve_range=True)
-                        preds_test_upsampled= (preds_test_upsampled * 255).astype(np.uint8)
-                        results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
-                        self.plot_annotation(img,results,files[i],OUTPUT)
-                        self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results[(j - 1) * 2]
-                        self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results[(j - 1) * 2 + 1]
-            else:
-                #if annotation assistance is requested, we only want to annotate the random frames extracted by the user
-                for i in range(0, len(preds_test)):
-                    results = np.zeros((self.num_bodyparts * 2))
-                    # here to update dataframe with annotations
-                    img = imread(self.image_folder + files[self.frame_selected_for_annotation[i]])
-                    sizes_test = np.shape(img)[:-1]
-                    for j in range(0, self.num_bodyparts + 1):
-                        if j == 0: continue
-
-                        preds_test_upsampled = resize(np.squeeze(preds_test_t[i, :, :, j]),
-                                                      (sizes_test[0], sizes_test[1]),
-                                                      mode='constant', preserve_range=True)
-                        preds_test_upsampled = (preds_test_upsampled * 255).astype(np.uint8)
-                        results[(j - 1) * 2:(j - 1) * 2 + 2] = self.prediction_to_annotation(preds_test_upsampled)
-                        self.plot_annotation(img, results, files[self.frame_selected_for_annotation[i]], OUTPUT)
-                        self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[self.frame_selected_for_annotation[i]] = -results[(j - 1) * 2]
-                        self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[self.frame_selected_for_annotation[i]] = results[(j - 1) * 2 + 1]
-
-            self.dataFrame.to_pickle(self.annotation_file)
-            self.dataFrame.to_csv(os.path.join(self.annotation_file + ".csv"))
+        self.dataFrame.to_pickle(self.annotation_file)
+        self.dataFrame.to_csv(os.path.join(self.annotation_file + ".csv"))
+        self.dataFrame3.to_csv(os.path.join(self.address,self.annotation_file + "_with_confidence.csv"))
 
     def lr_scheduler(self,epoch):
         return self.learning_rate * (0.5 ** (epoch // self.lr_drop))
@@ -516,6 +565,49 @@ class unet():
         # copyfile(os.path.join(self.filename + ".csv"), os.path.join(self.filename + "_MANUAL.csv"))
         # self.dataFrame.to_pickle(self.filename)  # where to save it, usually as a .pkl
         # wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.load.GetId())
+
+    def compute_confidence(self,annotation):
+        # compute_corresponding_annotation_point
+        # annotation = cv2.cvtColor(annotation, cv2.COLOR_BGR2GRAY)
+        confidence_image = copy.copy(annotation)
+        confidence_image = confidence_image/255.0
+        confidence_image = confidence_image.astype(int)
+
+        mask = np.zeros_like(confidence_image)
+        thresh, annotation = cv2.threshold(annotation, 0.99, 1, cv2.THRESH_BINARY)
+        contour, hierarchy = cv2.findContours(annotation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        if contour != []:
+            max_area = 0
+            i_max = []
+            for cc in contour:
+                mom = cv2.moments(cc)
+                area = mom['m00']
+                if area > max_area:
+                    max_area = area
+                    i_max = cc
+
+            center = cv2.moments(i_max)
+            cv2.drawContours(mask, [i_max], -1, (255, 255, 255), -1)
+
+            mask = mask / 255.0;
+            mask = mask.astype(int)
+
+            mean_values = np.multiply(confidence_image, mask)
+            confidence = np.mean(mean_values[np.where(mean_values != 0)])
+            xc = center['m10'] / center['m00']
+            yc = center['m01'] / center['m00']
+
+        else:
+            # maybe one joint is missing, but the other were correctly identified
+            # self.dataFrame[self.dataFrame.columns[(i - 1) * 2]].values[j] = -1
+            # self.dataFrame[self.dataFrame.columns[(i - 1) * 2 + 1]].values[j] = -1
+            xc = -1
+            yc = -1
+            confidence = 0
+
+        return xc, yc, confidence
+
+
 
     def plot_annotation(self,image,points,name,OUTPUT):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
