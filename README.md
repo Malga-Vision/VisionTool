@@ -32,15 +32,17 @@ Alternatively, you can use a Python IDE and run the file *main.py*.
 ### Tests 
 
 **VisionTool is expected to be run using the main GUI**.
+
 However, we uploaded a set of tests for VisionTool that can be run outside of the main GUI, as single code instructions. The test.py file contained in test folder provide an example of analysis for a sample video included in the repository and automatically downloaded after installation. 
 In detail, we uploaded a set of possible annotations so that training and testing may be directly possible. 
-First, you need to import the Test_lib module from VisionTool, so open python and then run:
+You can run the test.py file for an example of working pipeline. Or you can run the single instructions within python. 
+In the latter case, you first need to import the Test_lib module from VisionTool, so open python and then run:
 
 ```
 From VisionTool.Test_lib import test
 ```
 
-The test.py file:
+Then use the next lines of code to perform correspondent operations. 
 
 ``` 
 # initialize the test object 
