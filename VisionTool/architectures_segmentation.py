@@ -54,7 +54,7 @@ class unet():
         self.markerSize = 13
 
         self.BATCH_SIZE = BATCH_SIZE  # the higher the better
-        self.annotation_file = annotation_file
+        self.annotation_file = os.path.join(address,annotation_file)
         self.bodyparts = bodyparts
         self.colors = colors
         self.single_labels = single_labels
