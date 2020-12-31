@@ -47,7 +47,7 @@ class routine():
         if dlg.ShowModal() == wx.ID_OK:
             fdir = dlg.GetPath() + "/"
             dlg.SetPath(fdir)
-        filename = self.ask()
+            filename = self.ask()
         self.address = os.path.join(dlg.GetPath(),filename)
         try:
             os.mkdir(os.path.join(dlg.GetPath(),filename))
