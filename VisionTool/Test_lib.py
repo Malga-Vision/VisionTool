@@ -336,6 +336,51 @@ class test ():
             training(address = self.address,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name + 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
             pass
 
+    def check_and_test(self):
+
+
+
+        self.address_proj = os.path.dirname(self.config)
+
+        self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
+        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
+        if not os.path.isfile(self.file_preferences):
+            wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
+            return
+        files = os.listdir(self.address)
+        for i in range(0, len(files)):
+            if '.csv' in files[i]:
+                self.does_annotation_exist = 1
+                self.filename = files[i]
+            if 'annotation_options' in files[i]:
+                preferences_file = os.path.dirname(self.config) + os.sep + 'annotation_options.txt'
+                pref_ann = open(preferences_file, 'r')
+                temporary = pref_ann.readlines()
+                self.scorer = temporary[1]
+                self.bodyparts = temporary[9:]
+        del self.app
+        self.app = wx.App()
+        self.app.MainLoop()
+        if not self.does_annotation_exist:
+            wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
+            return
+        else:
+            if not os.path.isfile(self.address + os.sep + 'Unet.h5'):
+                wx.MessageBox('No Trained network found!', 'Trained model missing', wx.OK | wx.ICON_INFORMATION)
+                return
+            else:
+                dlg = wx.MessageDialog(None,
+                                       "Do you want to proceed?",
+                                       "Found existing trained architecture!", wx.YES_NO | wx.ICON_WARNING)
+                result = dlg.ShowModal()
+                if result == wx.ID_NO:
+                    return
+
+                else:
+                    training(address=self.address_proj, file_annotation=self.filename[:-4],
+                             image_folder=self.address + os.sep + self.name + os.sep,
+                             annotation_folder=os.path.join(self.address, self.name , 'annotation'),
+                             bodyparts=self.bodyparts, train_flag=0,annotation_assistance=0)
 
     def load_testing_annotation(self,config):
         self.upload_existent = 1
@@ -346,13 +391,3 @@ class test ():
         copyfile(os.path.join(self.CONFIG_PATH , '_index_annotation.txt'),os.path.join(os.path.dirname(self.config) , '_index_annotation.txt'))
         copyfile(os.path.join(self.CONFIG_PATH , '_index_annotation_auto.txt'),os.path.join(os.path.dirname(self.config) , '_index_annotation_auto.txt'))
         copyfile(os.path.join(self.CONFIG_PATH , 'annotation_options.txt'),os.path.join(os.path.dirname(self.config) , 'annotation_options.txt'))
-
-
-
-
-
-
-
-
-
-
