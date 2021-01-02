@@ -78,7 +78,7 @@ class unet():
                           , 'Error!', wx.OK | wx.ICON_ERROR)
             return
 
-        self.annotated = np.where(np.isnan(self.dataFrame.iloc[:, 0].values) == False)[0]
+        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False), self.dataFrame.iloc[:, 0].values>0)==True)[0]
 
         if train_flag==1:
             self.train()
@@ -490,8 +490,8 @@ class unet():
                     results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
                     results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
                     self.plot_annotation(img,results,files[i],OUTPUT)
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results_plus_conf[(j - 1) * 2]
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results_plus_conf[(j - 1) * 2 + 1]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results[(j - 1) * 2]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results[(j - 1) * 2 + 1]
                     self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[i] = -results_plus_conf[(j - 1) * 3]
                     self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[i] = results_plus_conf[
                         (j - 1) * 3 + 1]
