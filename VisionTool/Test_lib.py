@@ -314,7 +314,7 @@ class test ():
 
         files = os.listdir(self.address)
         for i in range(0, len(files)):
-            if '.csv' in files[i]:
+            if '.csv' in files[i] and 'with_confidence' not in files[i]:
                 self.does_annotation_exist = 1
                 self.filename = files[i]
             if 'annotation_options' in files[i]:
@@ -349,7 +349,7 @@ class test ():
             return
         files = os.listdir(self.address)
         for i in range(0, len(files)):
-            if '.csv' in files[i]:
+            if '.csv' in files[i] and 'with_confidence' not in files[i]:
                 self.does_annotation_exist = 1
                 self.filename = files[i]
             if 'annotation_options' in files[i]:
