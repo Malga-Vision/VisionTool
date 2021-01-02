@@ -69,6 +69,7 @@ class unet():
         self.annotation_folder = annotation_folder
         self.address = address
 
+
         try:
             self.dataFrame = pd.read_pickle(self.annotation_file)
         except:
@@ -487,7 +488,7 @@ class unet():
                                                        mode='constant', preserve_range=True)
                     preds_test_upsampled= (preds_test_upsampled * 255).astype(np.uint8)
                     results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
-                    results_plus_conf[(j - 1) * 2:(j - 1) * 2 + 3] = self.compute_confidence(preds_test_upsampled)
+                    results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
                     self.plot_annotation(img,results,files[i],OUTPUT)
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results_plus_conf[(j - 1) * 2]
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results_plus_conf[(j - 1) * 2 + 1]
@@ -570,8 +571,8 @@ class unet():
         # compute_corresponding_annotation_point
         # annotation = cv2.cvtColor(annotation, cv2.COLOR_BGR2GRAY)
         confidence_image = copy.copy(annotation)
-        confidence_image = confidence_image/255.0
-        confidence_image = confidence_image.astype(int)
+        raw_image = copy.copy(annotation)
+        confidence_image[np.where(confidence_image!=0)]=1;
 
         mask = np.zeros_like(confidence_image)
         thresh, annotation = cv2.threshold(annotation, 0.99, 1, cv2.THRESH_BINARY)
@@ -589,11 +590,11 @@ class unet():
             center = cv2.moments(i_max)
             cv2.drawContours(mask, [i_max], -1, (255, 255, 255), -1)
 
-            mask = mask / 255.0;
-            mask = mask.astype(int)
+            mask[np.where(mask != 0)] = 1;
 
             mean_values = np.multiply(confidence_image, mask)
-            confidence = np.mean(mean_values[np.where(mean_values != 0)])
+            confidence = np.mean(raw_image[np.where(mean_values != 0)])
+            confidence = confidence/255.0
             xc = center['m10'] / center['m00']
             yc = center['m01'] / center['m00']
 
