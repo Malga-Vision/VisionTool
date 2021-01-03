@@ -50,7 +50,7 @@ class unet():
 
         self.loss_function = loss
 
-        self.markerSize = markersize
+        self.markerSize = int(markersize)
 
         self.BATCH_SIZE = int(BATCH_SIZE)  # the higher the better
         self.annotation_file = os.path.join(address,annotation_file)
@@ -146,7 +146,6 @@ class unet():
 
 
         #self.markerSize = np.min([round(img.shape[0] / self.IMG_WIDTH), round(img.shape[1] / self.IMG_HEIGHT)]) + 3
-        self.markerSize = 13
         # files= np.unique(files_original_name)
         X_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
         Y_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, self.num_bodyparts + 1), dtype=np.int)
