@@ -19,10 +19,10 @@ If you are using Linux, you may need to install the library Wx prior to VisionTo
 
 ### VisionTool running
 
-To open VisionTool main GUI, open python and use the following lines of code:
+To open VisionTool main GUI, open python and use the following lines of code (you may need to cd in the correct folder before (~/src/visiontool)):
 
 ``` 
-    From VisionTool import main
+    from VisionTool import main
     main.main()
 ```
 If you are using MacOS, open pythonw. 
