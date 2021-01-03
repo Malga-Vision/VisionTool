@@ -39,7 +39,7 @@ You can run the test.py file for an example of working pipeline. Or you can run 
 In the latter case, you first need to import the Test_lib module from VisionTool, so open python and then run:
 
 ```
-From VisionTool.Test_lib import test
+from VisionTool.Test_lib import test
 ```
 
 Then use the next lines of code to perform correspondent operations. 
