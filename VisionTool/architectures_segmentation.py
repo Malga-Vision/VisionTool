@@ -343,48 +343,49 @@ class unet():
         counter = 0
 
         if self.annotation_assistance==0:
+            pass
         # do I only want to predict the videos not-annotated frames?
-            try:
-                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
-                                            wx.YES_NO | wx.ICON_INFORMATION)
-            except:
-                self.app = wx.App()
-                self.app.MainLoop()
-                nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?',
-                                            'Choose your option?',
-                                            wx.YES_NO | wx.ICON_INFORMATION)
-            if nextFilemsg == 2:
-
-                with wx.DirDialog(self, "Select folder containing (only!) frames to predict") as fileDialog:
-
-                    if fileDialog.ShowModal() == wx.ID_CANCEL:
-                        return  # the user changed their mind
-
-                    else:
-
-                        self.pathname = fileDialog.GetPaths()
-                        files = os.listdir(pathname)
-                        self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS),
-                                               dtype=np.uint8)
-
-                        # this is in case we want to evaluate the images contained in a folder
-                        for l in files:
-                            img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
-                            img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
-                            self.X_test[counter] = img
-                            counter += 1
-
-
-            else:
-
-                #all of the images but the annotated ones will be annotated
-                self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
-
-                for l in files:
-                    img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
-                    img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
-                    self.X_test[counter] = img
-                    counter += 1
+        #     try:
+        #         nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
+        #                                     wx.YES_NO | wx.ICON_INFORMATION)
+        #     except:
+        #         self.app = wx.App()
+        #         self.app.MainLoop()
+        #         nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?',
+        #                                     'Choose your option?',
+        #                                     wx.YES_NO | wx.ICON_INFORMATION)
+        #     if nextFilemsg == 2:
+        #
+        #         with wx.DirDialog(self, "Select folder containing (only!) frames to predict") as fileDialog:
+        #
+        #             if fileDialog.ShowModal() == wx.ID_CANCEL:
+        #                 return  # the user changed their mind
+        #
+        #             else:
+        #
+        #                 self.pathname = fileDialog.GetPaths()
+        #                 files = os.listdir(pathname)
+        #                 self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS),
+        #                                        dtype=np.uint8)
+        #
+        #                 # this is in case we want to evaluate the images contained in a folder
+        #                 for l in files:
+        #                     img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
+        #                     img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
+        #                     self.X_test[counter] = img
+        #                     counter += 1
+        #
+        #
+        #     else:
+        # 
+        #         #all of the images but the annotated ones will be annotated
+        #         self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
+        #
+        #         for l in files:
+        #             img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
+        #             img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
+        #             self.X_test[counter] = img
+        #             counter += 1
 
         else:
             if os.path.isfile(os.path.join(os.path.dirname(self.annotation_file), '_index_annotation.txt')):
