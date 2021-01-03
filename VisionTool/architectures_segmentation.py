@@ -43,17 +43,16 @@ import threading
 
 class unet():
 
-    def __init__(self,architecture, backbone,image_net,single_labels,colors,address,annotation_file,image_folder,annotation_folder,bodyparts,BATCH_SIZE = 5,train_flag=1,annotation_assistance = 0,lr = 0.001,loss = "Weighted Categorical_cross_entropy"):
+    def __init__(self,architecture, backbone,image_net,single_labels,colors,address,annotation_file,image_folder,annotation_folder,bodyparts,BATCH_SIZE = 5,train_flag=1,annotation_assistance = 0,lr = 0.001,loss = "Weighted Categorical_cross_entropy",markersize=13):
 
         self.lr_drop = 10
 
-        learning_rate = lr
 
         self.loss_function = loss
 
-        self.markerSize = 13
+        self.markerSize = markersize
 
-        self.BATCH_SIZE = BATCH_SIZE  # the higher the better
+        self.BATCH_SIZE = int(BATCH_SIZE)  # the higher the better
         self.annotation_file = os.path.join(address,annotation_file)
         self.bodyparts = bodyparts
         self.colors = colors
@@ -62,7 +61,7 @@ class unet():
         self.backbone = backbone
         self.image_net = image_net
         self.annotation_assistance = annotation_assistance
-        self.learning_rate = 0.001
+        self.learning_rate = float(lr)
         self.train_flag = train_flag
         self.num_bodyparts = len(self.bodyparts)
         self.image_folder = image_folder

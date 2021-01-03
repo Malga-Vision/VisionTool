@@ -60,8 +60,12 @@ class training ():
         self.single_labels = reading[7][:-1]
         self.learning_rate = reading[9][:-1]
         self.loss = reading[11][:-1]
+        self.batch_size = reading[13][:-1]
 
         self.map = self.pref[7][:-1]
+
+        self.markersize = self.pref[3][:-1]
+
         try:
             self.colormap = plt.get_cmap(self.map)
         except:
@@ -96,7 +100,7 @@ class training ():
                  colors = self.colors,address = self.address,annotation_file = self.file_annotation,
                  image_folder = self.image_folder,
                  annotation_folder = self.annotation_folder,bodyparts= self.bodyparts,
-                 train_flag = self.train_flag,annotation_assistance = self.annotation_assistance,lr=self.learning_rate,loss=self.loss)
+                 train_flag = self.train_flag,annotation_assistance = self.annotation_assistance, lr=self.learning_rate,loss=self.loss,BATCH_SIZE=self.batch_size,markersize = self.markersize)
 
         
         

@@ -208,6 +208,8 @@ class Open_interface(wx.Frame):
             file.write(str(self.text.GetValue())+ '\n')
             file.write('Loss function\n')
             file.write(str(self.loss.GetStringSelection()) + '\n')
+            file.write('Batch Size\n')
+            file.write(str(self.Batch.GetValue()) + '\n')
             file.close()
             self.Close()
         except:
