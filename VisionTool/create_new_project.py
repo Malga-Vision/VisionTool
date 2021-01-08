@@ -47,12 +47,15 @@ class routine():
         if dlg.ShowModal() == wx.ID_OK:
             fdir = dlg.GetPath() + "/"
             dlg.SetPath(fdir)
-        filename = self.ask()
+            filename = self.ask()
+        else:
+            return ""
         self.address = os.path.join(dlg.GetPath(),filename)
         try:
             os.mkdir(os.path.join(dlg.GetPath(),filename))
         except:
             error = wx.MessageBox("Folder already exists")
+            return ""
         if not os.path.isfile(os.path.join(self.address,"file_configuration.txt")):
             self.config_file = open(os.path.join(self.address,"file_configuration.txt"), "a")
             self.config_file.write(filename)
@@ -60,6 +63,7 @@ class routine():
             self.config_file.close()
         else:
             error = wx.MessageBox("configuration file already exists")
+            return ""
 
         return self.address
 
