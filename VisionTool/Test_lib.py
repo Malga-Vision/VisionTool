@@ -25,6 +25,7 @@ import VisionTool.opening_toolbox
 import cv2
 from VisionTool.Frame_Extraction import *
 from VisionTool.Interface_net import *
+from Visiontool.New_project_features import *
 from VisionTool.training import *
 from shutil import copyfile
 import pandas as pd
