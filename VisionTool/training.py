@@ -19,14 +19,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-
 from VisionTool.architectures_segmentation import *
+from VisionTool.architectures_segmentation_multiple_videos import *
 import os
 import wx
 import matplotlib.pyplot as plt
 
 class training ():
-    def __init__(self,address,file_annotation,image_folder,annotation_folder,bodyparts,train_flag,annotation_assistance):
+    def __init__(self,address,file_annotation,image_folder,annotation_folder,bodyparts,train_flag,annotation_assistance,multi_video=0):
         self.address = address 
         self.train_flag = train_flag
         self.bodyparts = bodyparts
@@ -37,6 +37,7 @@ class training ():
         self.annotation_folder = annotation_folder
         self.file_preferences = os.path.join(self.address,'Architecture_Preferences.txt')
         self.preferences_file =  os.path.join(self.address,'annotation_options.txt')
+        self.multi_video = multi_video
         try:
             file = open(self.preferences_file)
             self.pref = file.readlines()
@@ -94,13 +95,21 @@ class training ():
             #to be added
         file.close()
         reading_pointer.close()
+
+
     def train(self):
         #loading of annotation
+        if self.multi_video==0:
             unet(architecture = self.architecture, backbone = self.backbone,image_net = self.imagenet,single_labels=self.single_labels,
                  colors = self.colors,address = self.address,annotation_file = self.file_annotation,
                  image_folder = self.image_folder,
                  annotation_folder = self.annotation_folder,bodyparts= self.bodyparts,
                  train_flag = self.train_flag,annotation_assistance = self.annotation_assistance, lr=self.learning_rate,loss=self.loss,BATCH_SIZE=self.batch_size,markersize = self.markersize)
-
+        else:
+            unet_multiple_videos(architecture = self.architecture, backbone = self.backbone,image_net = self.imagenet,single_labels=self.single_labels,
+                 colors = self.colors,address = self.address,annotation_file = self.file_annotation,
+                 image_folder = self.image_folder,
+                 annotation_folder = self.annotation_folder,bodyparts= self.bodyparts,
+                 train_flag = self.train_flag,annotation_assistance = self.annotation_assistance, lr=self.learning_rate,loss=self.loss,BATCH_SIZE=self.batch_size,markersize = self.markersize)
         
         

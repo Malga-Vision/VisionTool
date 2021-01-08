@@ -205,23 +205,30 @@ class Label_frames(wx.Panel):
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
-        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
+
+
         if not os.path.isfile(self.file_preferences):
-            wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
+            wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing',
+                          wx.OK | wx.ICON_INFORMATION)
             return
-        if not self.does_annotation_exist.GetValue():
+
+        if not self.does_annotation_exist.GetValue() and self.index_video!=len(self.video_list_text)-1:
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
+
+        if self.index_video!=len(self.video_list_text)-1:
+            self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
+            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0,multi_video=0)
         else:
-            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
-            pass
+            self.name = ""
+            training(address = self.address_proj,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0,multi_video=1)
+
 
     def check_and_test(self,event):
 
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
-        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
             return
@@ -241,10 +248,21 @@ class Label_frames(wx.Panel):
                     return
 
                 else:
-                    training(address=self.address_proj, file_annotation=self.filename[:-4],
-                             image_folder=self.address + os.sep + self.name + os.sep,
-                             annotation_folder=os.path.join(self.address, self.name),
-                             bodyparts=self.bodyparts, train_flag=0,annotation_assistance=0)
+
+                    if self.index_video != len(self.video_list_text) - 1:
+                        self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][
+                                                          self.find(self.video_list_with_address[self.index_video],
+                                                                    os.sep)[-1] + 1:-1]
+                        training(address=self.address_proj, file_annotation=self.filename[:-4],
+                                 image_folder=self.address + os.sep + self.name + os.sep,
+                                 annotation_folder=os.path.join(self.address, self.name),
+                                 bodyparts=self.bodyparts, train_flag=0, annotation_assistance=0,multi_video=0)
+                    else:
+                        self.name = ""
+                        training(address=self.address_proj, file_annotation=self.filename[:-4],
+                                 image_folder=self.address + os.sep + self.name + os.sep,
+                                 annotation_folder=os.path.join(self.address, self.name),
+                                 bodyparts=self.bodyparts, train_flag=0, annotation_assistance=0, multi_video=1)
 
     def import_from_deeplabcut_method(self,event):
 
@@ -401,7 +419,9 @@ class Label_frames(wx.Panel):
                 "Proceeding with frame extraction.\n"
                 "Do you want to proceed with the analysis of selected video", "Confirm",
                 wx.YES_NO | wx.YES_DEFAULT, self) == wx.YES:
-            extract_Frames(self,self.video_list_with_address,self.index_video,self,self.index,self.config,self.import_from_deeplabcut_flag)
+            f_object = extract_Frames(self,self.video_list_with_address,self.index_video,self,self.index,self.config,self.import_from_deeplabcut_flag)
+            if f_object.error == 1:
+                return
             opening_toolbox.show(self,self.video_list_with_address,self.index_video,self.config,self.index, imtypes=['*.png'],)
 
     def get_video_list(self):

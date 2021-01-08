@@ -68,22 +68,52 @@ class unet():
         self.annotation_folder = annotation_folder
         self.address = address
 
+        try:
+            file = open(self.address + os.sep + 'annotation_options.txt')
+            self.options = file.readlines()
+        except:
+            wx.MessageBox('Error in reading the annotation_options, please check the existence or choose'
+                          ' annotation_options\n '
+                          'annotation_options reading error '
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            return
+        try:
+            configuration_file = self.address + os.sep + 'file_configuration.txt'
+            file = open(configuration_file)
+            self.pref = file.readlines()
+        except:
+            wx.MessageBox('Error in reading the  configuration file, please check the address or existence'
+                          'configuration file \n '
+                          'configuration file_error'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            self.error = 1
+            return
 
+        self.scorer = self.options[1][:-1]
+
+        self.number_videos = len(self.pref)-2
+
+        for i in range(0, self.number_videos):
+            ind = self.pref[2+i].rfind(os.sep)
+            if self.pref[2+i][ind+1:-1] in self.annotation_file:
+                self.name_video_list = self.pref[2+i][ind+1:-1]
+                break
         try:
             self.dataFrame = pd.read_pickle(self.annotation_file)
         except:
             wx.MessageBox('Annotations reading error\n '
                           'Annotation not found'
                           , 'Error!', wx.OK | wx.ICON_ERROR)
+            self.error = 1
             return
 
-        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False), self.dataFrame.iloc[:, 0].values>0)==True)[0]
-
+        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
+                                                     self.dataFrame.iloc[:, 0].values > 0) == True)[0]
         if train_flag==1:
             self.train()
         self.test()
 
-        pass
+
 
     def weighted_categorical_crossentropy(self,weights):
 
@@ -120,13 +150,7 @@ class unet():
         print('Getting and resizing train images and masks ... ')
         sys.stdout.flush()
         counter = 0
-        IMG_CHANNELS = 3
-        self.IMG_CHANNELS = IMG_CHANNELS
-        #img = imread(os.path.join(self.annotation_folder, files[0]))[:, :, :self.IMG_CHANNELS]
-        #IMG_HEIGHT = np.shape(img)[0]
-        #IMG_WIDTH = np.shape(img)[1]
-        #self.IMG_WIDTH = IMG_WIDTH  # for faster computing on kaggle
-        #self.IMG_HEIGHT = IMG_HEIGHT  # for faster computing on kaggle
+
         self.IMG_WIDTH = 288  # for faster computing on kaggle
         self.IMG_HEIGHT = 288  # for faster computing on kaggle
 
@@ -142,11 +166,11 @@ class unet():
         img = imread(self.image_folder + os.sep + files_original_name[0])
 
 
+        IMG_CHANNELS = len(np.shape(img))
+        self.IMG_CHANNELS = IMG_CHANNELS
+
         self.file_name_for_prediction_confidence = files_original_name;
 
-
-        #self.markerSize = np.min([round(img.shape[0] / self.IMG_WIDTH), round(img.shape[1] / self.IMG_HEIGHT)]) + 3
-        # files= np.unique(files_original_name)
         X_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
         Y_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, self.num_bodyparts + 1), dtype=np.int)
         New_train = np.zeros((len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH), dtype=np.int)
@@ -178,30 +202,30 @@ class unet():
                 mask_[:,:,j] = mask_single_label
 
             mask_ = resize(mask_, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
-            a,mask_ = cv2.threshold(mask_,150,255,cv2.THRESH_BINARY)
+            a,mask_ = cv2.threshold(mask_,200,255,cv2.THRESH_BINARY)
             mask_=mask_/255.0
             temp = np.sum(mask_,axis=2)
 
             for j in range(0, self.num_bodyparts):
                 New_train[counter] = New_train[counter] + mask_[:, :, j]* (j + 1)
 
-            temp = temp + 1
-            temp[temp == 0] = 1
-            temp[temp > 1] = 0
-            Y_train[counter, :, :,1:] = mask_
-            Y_train[counter,:,:,0] = temp
+            # alternative method to build the ground truth
+            # temp = temp + 1
+            # temp[temp == 0] = 1
+            # temp[temp > 1] = 0
+            # Y_train[counter, :, :,1:] = mask_
+            # Y_train[counter,:,:,0] = temp
             counter += 1
-            
-        Y_train = tf.keras.utils.to_categorical(New_train, num_classes=self.num_bodyparts + 1)
+            #
 
-        # X_train = X_train/255.0
-            # mask = np.zeros((IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.bool)
-            # for mask_file in next(os.walk(path + '/masks/'))[2]:
-            #     mask_ = imread(path + '/masks/' + mask_file)
-            #     mask_ = np.expand_dims(resize(mask_, (IMG_HEIGHT, IMG_WIDTH), mode='constant',
-            #                                   preserve_range=True), axis=-1)
-            #     mask = np.maximum(mask, mask_)
-            # Y_train[n] = mask
+        try:
+            Y_train = tf.keras.utils.to_categorical(New_train, num_classes=self.num_bodyparts + 1)
+        except:
+            wx.MessageBox('two or more labels are overlapping!\n '
+                          'Check annotation or re-perform the labeling operation'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            self.error = 1
+            return
 
         counter = 0
         
@@ -248,7 +272,6 @@ class unet():
         from segmentation_models.utils import set_trainable
         import segmentation_models
         from tensorflow.keras.optimizers import RMSprop,SGD
-        #model = self.model(self.IMG_HEIGHT,self.IMG_WIDTH,self.IMG_CHANNELS)
 
 
         if self.architecture=='Linknet':
@@ -322,8 +345,7 @@ class unet():
                            custom_objects={'loss': loss, 'dice_loss': segmentation_models.losses.DiceLoss,
                                           'iou_score':metric})
 
-
-        OUTPUT = os.path.join(self.address,'prediction')
+        OUTPUT = os.path.join(self.address, self.name_video_list + '_prediction')
 
         try:
             os.mkdir(OUTPUT)
@@ -333,63 +355,38 @@ class unet():
         files = os.listdir(self.image_folder)
         files_original_name = list()
 
+        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
+                                                 self.dataFrame.iloc[:, 0].values > 0) == True)[0]
         for i in range(0, len(self.annotated)):
             files_original_name.append(files[self.annotated[i]])
         #files = np.unique(files_original_name)
-        self.IMG_CHANNELS = 3
+        img = imread(self.image_folder + os.sep + files[0])
 
+        IMG_CHANNELS = len(np.shape(img))
+        self.IMG_CHANNELS = IMG_CHANNELS
         self.IMG_WIDTH = 288
         self.IMG_HEIGHT = 288
         counter = 0
 
         if self.annotation_assistance==0:
-            pass
-        # do I only want to predict the videos not-annotated frames?
-        #     try:
-        #         nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?', 'Choose your option?',
-        #                                     wx.YES_NO | wx.ICON_INFORMATION)
-        #     except:
-        #         self.app = wx.App()
-        #         self.app.MainLoop()
-        #         nextFilemsg = wx.MessageBox('Do you want to predict frames from different video?',
-        #                                     'Choose your option?',
-        #                                     wx.YES_NO | wx.ICON_INFORMATION)
-        #     if nextFilemsg == 2:
-        #
-        #         with wx.DirDialog(self, "Select folder containing (only!) frames to predict") as fileDialog:
-        #
-        #             if fileDialog.ShowModal() == wx.ID_CANCEL:
-        #                 return  # the user changed their mind
-        #
-        #             else:
-        #
-        #                 self.pathname = fileDialog.GetPaths()
-        #                 files = os.listdir(pathname)
-        #                 self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS),
-        #                                        dtype=np.uint8)
-        #
-        #                 # this is in case we want to evaluate the images contained in a folder
-        #                 for l in files:
-        #                     img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
-        #                     img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
-        #                     self.X_test[counter] = img
-        #                     counter += 1
-        #
-        #
-        #     else:
-        # 
-        #         #all of the images but the annotated ones will be annotated
-        #         self.X_test = np.zeros((len(files), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
-        #
-        #         for l in files:
-        #             img = imread(self.image_folder + os.sep + l)[:, :, :self.IMG_CHANNELS]
-        #             img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
-        #             self.X_test[counter] = img
-        #             counter += 1
+
+            self.X_test = np.zeros((len(files)- len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
+
+            self.testing_index = list()
+
+            for l in range(0, len(files)):
+                if l not in self.annotated:
+                    self.testing_index.append(l)
+                    img = imread(self.image_folder + os.sep + files[l])[:, :, :self.IMG_CHANNELS]
+                    img = resize(img, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
+                    self.X_test[counter] = img
+                    counter += 1
+
+            self.testing_index = np.asarray(self.testing_index)
 
         else:
-            if os.path.isfile(os.path.join(os.path.dirname(self.annotation_file), '_index_annotation.txt')):
-                self.pref_ann = open(os.path.join(os.path.dirname(self.annotation_file), '_index_annotation_auto.txt'), 'r')
+            if os.path.isfile(os.path.join(os.path.dirname(self.annotation_file), self.name_video_list + '_index_annotation.txt')):
+                self.pref_ann = open(os.path.join(os.path.dirname(self.annotation_file),self.name_video_list + '_index_annotation_auto.txt'), 'r')
             temporary = self.pref_ann.readlines()
             for i in range(0, len(temporary)):
                 temporary[i] = temporary[i][:-1]
@@ -430,26 +427,28 @@ class unet():
         preds_test_t = preds_test
         # Create list of upsampled test masks
         preds_test_upsampled = []
-        address_single_labels = os.path.join(self.address, 'Single_labels')
-
+        address_single_labels = os.path.join(self.address, self.name_video_list + '_Single_labels')
+        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
+                                                 self.dataFrame.iloc[:, 0].values > 0) == True)[0]
         try:
             os.mkdir(address_single_labels)
         except:
             pass
 
         if self.single_labels == 'Yes':
+
+            if self.annotation_assistance == 1:
+                self.testing_index = self.frame_selected_for_annotation
             # PREDICT AND SAVE SINGLE LABELS IMAGES
             for i in range(0, len(preds_test)):
-                if i in self.annotated:
-                    continue
-                img = imread(self.image_folder + files[i])
+                img = imread(self.image_folder + os.sep + files[self.testing_index[i]])
                 sizes_test = np.shape(img)[:-1]
                 for j in range(0, self.num_bodyparts + 1):
                     preds_test_upsampled = resize(np.squeeze(preds_test_t[i, :, :, j]),
                                                   (sizes_test[0], sizes_test[1]),
                                                   mode='constant', preserve_range=True)
                     preds_test_upsampled = (preds_test_upsampled * 255).astype(int)
-                    cv2.imwrite(address_single_labels + os.sep + ("{:02d}".format(j)) + files[i], preds_test_upsampled)
+                    cv2.imwrite(address_single_labels + os.sep + ("{:02d}".format(j)) + files[self.testing_index[i]], preds_test_upsampled)
 
         #let us create a dataframe to store prediction confidence
 
@@ -471,13 +470,11 @@ class unet():
         if self.annotation_assistance == 0:
             for i in range(0, len(preds_test)):
 
-                if i in self.annotated:
-                    continue
                 results = np.zeros((self.num_bodyparts*2))
                 results_plus_conf = np.zeros((self.num_bodyparts*3))
 
                 #here to update dataframe with annotations
-                img = imread(self.image_folder + files[i])
+                img = imread(self.image_folder + os.sep + files[self.testing_index[i]])
                 sizes_test = np.shape(img)[:-1]
                 for j in range(0,self.num_bodyparts+1):
                     if j==0: continue
@@ -488,19 +485,20 @@ class unet():
                     preds_test_upsampled= (preds_test_upsampled * 255).astype(np.uint8)
                     results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
                     results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
-                    self.plot_annotation(img,results,files[i],OUTPUT)
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results[(j - 1) * 2]
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results[(j - 1) * 2 + 1]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[i] = -results_plus_conf[(j - 1) * 3]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[i] = results_plus_conf[
+                    self.plot_annotation(img,results,files[self.testing_index[i]],OUTPUT)
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[self.testing_index[i]] = -results[(j - 1) * 2]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[self.testing_index[i]] = results[(j - 1) * 2 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[self.testing_index[i]] = -results_plus_conf[(j - 1) * 3]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[self.testing_index[i]] = results_plus_conf[
                         (j - 1) * 3 + 1]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[i] = results_plus_conf[
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[self.testing_index[i]] = results_plus_conf[
                         (j - 1) * 3 + 2]
 
         else:
             #if annotation assistance is requested, we only want to annotate the random frames extracted by the user
             for i in range(0, len(preds_test)):
                 results = np.zeros((self.num_bodyparts * 2))
+                results_plus_conf = np.zeros((self.num_bodyparts * 3))
                 # here to update dataframe with annotations
                 img = imread(self.image_folder + files[self.frame_selected_for_annotation[i]])
                 sizes_test = np.shape(img)[:-1]
@@ -513,19 +511,24 @@ class unet():
                     preds_test_upsampled = (preds_test_upsampled * 255).astype(np.uint8)
                     results[(j - 1) * 2:(j - 1) * 2 + 2] = self.prediction_to_annotation(preds_test_upsampled)
                     results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
-                    self.plot_annotation(img, results, files[i], OUTPUT)
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = -results[(j - 1) * 2]
-                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[i] = results[(j - 1) * 2 + 1]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[i] = -results_plus_conf[(j - 1) * 3]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[i] = results_plus_conf[
+                    self.plot_annotation(img, results, files[self.frame_selected_for_annotation[i]], OUTPUT)
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[self.frame_selected_for_annotation[i]] = -results[(j - 1) * 2]
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[self.frame_selected_for_annotation[i]] = results[(j - 1) * 2 + 1]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[self.frame_selected_for_annotation[i]] = -results_plus_conf[(j - 1) * 3]
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 1]].values[self.frame_selected_for_annotation[i]] = results_plus_conf[
                         (j - 1) * 3 + 1]
-                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[i] = results_plus_conf[
+                    self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[self.frame_selected_for_annotation[i]] = results_plus_conf[
                         (j - 1) * 3 + 2]
 
         self.dataFrame.to_pickle(self.annotation_file)
         self.dataFrame.to_csv(os.path.join(self.annotation_file + ".csv"))
-        self.dataFrame3.to_csv(os.path.join(self.address,self.annotation_file + "_with_confidence.csv"))
-
+        try:
+            self.dataFrame3.to_csv(os.path.join(self.address, self.annotation_file + "_with_confidence.csv"))
+        except:
+            wx.MessageBox('Error in writing the results file'
+                          'file not accessible\n '
+                          'Error in writing'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
     def lr_scheduler(self,epoch):
         return self.learning_rate * (0.5 ** (epoch // self.lr_drop))
 
@@ -544,15 +547,22 @@ class unet():
                     max_area = area
                     i_max = cc
 
-            center = cv2.moments(i_max)
-            xc = center['m10'] / center['m00']
-            yc = center['m01'] / center['m00']
+
+            if len(i_max)==0:
+
+                xc = 1
+                yc = -1
+            else:
+                center = cv2.moments(i_max)
+
+                xc = center['m10'] / center['m00']
+                yc = center['m01'] / center['m00']
 
         else:
             #maybe one joint is missing, but the other were correctly identified
             # self.dataFrame[self.dataFrame.columns[(i - 1) * 2]].values[j] = -1
             # self.dataFrame[self.dataFrame.columns[(i - 1) * 2 + 1]].values[j] = -1
-            xc=-1
+            xc= 1
             yc=-1
 
         return xc,yc
@@ -586,22 +596,31 @@ class unet():
                     max_area = area
                     i_max = cc
 
-            center = cv2.moments(i_max)
-            cv2.drawContours(mask, [i_max], -1, (255, 255, 255), -1)
+            if len(i_max) == 0:
+                xc = 1
+                yc = -1
+                confidence = 0
+            else:
 
-            mask[np.where(mask != 0)] = 1;
+                center = cv2.moments(i_max)
+                cv2.drawContours(mask, [i_max], -1, (255, 255, 255), -1)
 
-            mean_values = np.multiply(confidence_image, mask)
-            confidence = np.mean(raw_image[np.where(mean_values != 0)])
-            confidence = confidence/255.0
-            xc = center['m10'] / center['m00']
-            yc = center['m01'] / center['m00']
+                mask[np.where(mask != 0)] = 1;
+
+                mean_values = np.multiply(confidence_image, mask)
+                confidence = np.mean(raw_image[np.where(mean_values != 0)])
+                confidence = confidence/255.0
+
+
+
+                xc = center['m10'] / center['m00']
+                yc = center['m01'] / center['m00']
 
         else:
             # maybe one joint is missing, but the other were correctly identified
             # self.dataFrame[self.dataFrame.columns[(i - 1) * 2]].values[j] = -1
             # self.dataFrame[self.dataFrame.columns[(i - 1) * 2 + 1]].values[j] = -1
-            xc = -1
+            xc =  1
             yc = -1
             confidence = 0
 

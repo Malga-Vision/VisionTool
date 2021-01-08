@@ -160,19 +160,47 @@ class MainFrame(wx.Frame):
     def __init__(self,parent, video_list_with_address,index_video,Label_frame, extract_frame_option, config, imtypes):
         # Settting the GUI size and panels design
         self.config = config
-        self.counter_frames = 0
         preferences_file =  os.path.dirname(self.config) + '//annotation_options.txt'
+
+        try:
+            file = open(preferences_file)
+            self.pref = file.readlines()
+        except:
+            wx.MessageBox('Error in reading the network configuration file, please check the existence or choose'
+                          'preferences again \n '
+                          'Preferences_file_error'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            self.Destroy()
+
+            return
+
+        for i in range(0, len(self.pref)):
+            self.pref[i] = self.pref[i][:-1]
+        self.options_frame = extract_frame_option
+
+
+        self.video_list_with_address = video_list_with_address
+        self.index_video = index_video
+        self.address = os.path.dirname(self.config)
+        self.scorer = self.pref[1]
+        self.title_video = self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
+        self.videos = self.video_list_with_address[self.index_video][:-1]
+        self.markerSize = int(self.pref[3])
+        self.alpha = float(self.pref[5])
+        self.map = self.pref[7]
+        self.counter_frames = 0
         self.Label_frame = Label_frame
-        if os.path.isfile(os.path.join(os.path.dirname(self.config), '_index_annotation.txt')):
-            self.pref_ann = open(os.path.join(os.path.dirname(self.config), '_index_annotation.txt'), 'r')
+
+        if os.path.isfile(os.path.join(os.path.dirname(self.config), self.title_video + '_index_annotation.txt')):
+            self.pref_ann = open(os.path.join(os.path.dirname(self.config), self.title_video +  '_index_annotation.txt'), 'r')
             temporary = self.pref_ann.readlines()
             for i in range(0, len(temporary)):
                 temporary[i] = temporary[i][:-1]
             temporary = np.asarray(temporary)
             self.frame_selected_for_annotation= temporary.astype(int)
             self.frame_selected_for_annotation=np.sort(self.frame_selected_for_annotation)
-        if os.path.isfile(os.path.join(os.path.dirname(self.config), '_index_annotation_auto.txt')):
-            self.pref_ann = open(os.path.join(os.path.dirname(self.config), '_index_annotation_auto.txt'), 'r')
+        if os.path.isfile(os.path.join(os.path.dirname(self.config),self.title_video +  '_index_annotation_auto.txt')):
+            self.pref_ann = open(os.path.join(os.path.dirname(self.config), self.title_video +   '_index_annotation_auto.txt'), 'r')
             temporary = self.pref_ann.readlines()
             for i in range(0, len(temporary)):
                 temporary[i] = temporary[i][:-1]
@@ -189,42 +217,11 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, parent, id=wx.ID_ANY, title='Annotation interface',
                           size=wx.Size(self.gui_size), pos=wx.DefaultPosition,
                           style=wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
-        try:
-            file = open(preferences_file)
-            self.pref = file.readlines()
-        except:
-            wx.MessageBox('Error in reading the network configuration file, please check the existence or choose'
-                          'preferences again \n '
-                          'Preferences_file_error'
-                          , 'Error!', wx.OK | wx.ICON_ERROR)
-            self.Destroy()
 
-            return
 
-        for i in range(0, len(self.pref)):
-            self.pref[i] = self.pref[i][:-1]
-        self.options_frame = extract_frame_option
-        try:
-            config2 = open(config, 'r')
-        except:
 
-            wx.MessageBox('Error in reading the configuration file \n '
-                      'Configuration file missing'
-                      , 'Error!', wx.OK | wx.ICON_ERROR)
-            self.Destroy()
-            return
 
-        self.address_video = config2.readlines()[1:]
-        self.video_list_with_address = video_list_with_address
-        self.index_video = index_video
-        self.address = os.path.dirname(self.config)
-        index = self.address_video[0].find(':')
-        self.address_video = self.address_video[0][index+1:]
-        self.scorer = self.pref[1]
-        self.videos = self.video_list_with_address[self.index_video][:-1]
-        self.markerSize = int(self.pref[3])
-        self.alpha = float(self.pref[5])
-        self.map = self.pref[7]
+
         try:
             self.colormap = plt.get_cmap(self.map)
         except:
@@ -233,8 +230,6 @@ class MainFrame(wx.Frame):
             self.colormap = plt.get_cmap('inferno')
 
         self.colormap = self.colormap.reversed()
-        config2.close()
-        self.title_video = self.video_list_with_address[self.index_video][self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
         self.name = 'Extracted_frames_' + self.title_video
         self.filename = self.address + "//Annotation_" + self.title_video + '_' + self.scorer
 
@@ -485,14 +480,35 @@ class MainFrame(wx.Frame):
 
         try:
 
-            self.dataFrame = pd.read_pickle(self.filename+'_MANUAL')
-            os.remove(self.filename)
-            self.dataFrame.to_pickle(self.filename)  # where to save it, usually as a .pkl
+            imlist = os.listdir(self.address + os.sep + self.name)
+            for i in range(0, len(imlist)):
+                imlist[i] = 'labeled' + imlist[i]
+            a = np.empty((len(self.index), 2,))
+            self.dataFrame3 = None
+            a[:] = np.nan
+            for bodypart in self.bodyparts:
+                index = pd.MultiIndex.from_product([[self.scorer], [bodypart], ['x', 'y']],
+                                                   names=['scorer', 'bodyparts', 'coords'])
+                frame = pd.DataFrame(a, columns=index, index=imlist)
+                self.dataFrame3 = pd.concat([self.dataFrame3, frame], axis=1)
+            num_columns = len(self.dataFrame3.columns)
+            self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
+                                                     self.dataFrame.iloc[:, 0].values > 0) == True)[0]
+            for j in range(0, num_columns):
+                for i in range(3, len(self.dataFrame[self.dataFrame.columns[0]].values)):
+                    if i in self.annotated:
+                        self.dataFrame3[self.dataFrame3.columns[j]].values[i] = self.dataFrame[self.dataFrame.columns[j]].values[i]
 
-            os.remove(os.path.join(self.filename + ".csv"))
-            os.rename(os.path.join(self.filename + "_MANUAL.csv"),os.path.join(self.filename + ".csv"))
-            self.cancel_annotation.Enable(False)
-            self.next_labeled_annotated.Enable(False)
+            self.dataFrame3.to_pickle(self.filename)
+            self.dataFrame3.to_csv(os.path.join(self.filename + ".csv"))
+            try:
+                self.dataFrame = pd.read_pickle(self.filename)
+            except:
+                wx.MessageBox('Reading error \n '
+                              'Annotation not found'
+                              , 'Error!', wx.OK | wx.ICON_ERROR)
+                return
+
 
         except:
             pass
@@ -593,10 +609,11 @@ class MainFrame(wx.Frame):
         Opens Instructions
         """
         MainFrame.updateZoomPan(self)
-        wx.MessageBox(
-            '1. Select one of the body parts from the radio buttons to add a label (if necessary change config.yaml first to edit the label names). \n\n2. Right clicking on the image will add the selected label and the next available label will be selected from the radio button. \n The label will be marked as circle filled with a unique color.\n\n3. To change the marker size, mark the checkbox and move the slider. \n\n4. Hover your mouse over this newly added label to see its name. \n\n5. Use left click and drag to move the label position.  \n\n6. Once you are happy with the position, right click to add the next available label. You can always reposition the old labels, if required. You can delete a label with the middle button mouse click. \n\n7. Click Next/Previous to move to the next/previous image.\n User can also add a missing label by going to a previous/next image and using the left click to add the selected label.\n NOTE: the user cannot add a label if the label is already present. \n\n8. When finished labeling all the images, click \'Save\' to save all the labels as a .h5 file. \n\n9. Click OK to continue using the labeling GUI.',
-            'User instructions', wx.OK | wx.ICON_INFORMATION)
+        wx.MessageBox('How to use the annotation interface'
+                      '\n\n1. Select a body part using the radio buttons to perform annotation (you can change preferences file editing the text to modify the label names, or change the preferences file). \n\n2. Right click on the image to add the selected label (the next one will be automatically available). \n The label will be added as a circle filled with the correpondent color (radius = marker size).\n\n3. Use the slide and checkbox to change marker size (important, for the training the marker size contained in preferences_file.txt will be used). \n\n4. Place the mouse pointer on a label to see its name. \n\n5. Use left click to drag a label in order to change the annotation position.  \n\n6. Right click to add the next available label. Or use the middle button to delete an inserted label. \n\n7. Click Next/Previous to move to the next/previous frame. Use the checkbox annot.only/ annot.auto only to view the frames randomly extracted for the annotation/annotation assistance\n Uncheck to view the frames in sequential order \n It is possible to add a missing label with the same system.\n \n8. When finished annotation, click \'Save\' to save all the labels as a .h5 file and .csv file. \n\n9. Click \'annotation_assistance\' to perform the automatic annotation procedure (Important! You have to select a number of frames to automaically detect in the main GUI of the software, or it would not be available \n 10. Use \'Cancel\' to delete the results of a prediction or of a automatic annotation procedure. You may need to close and re-open annotation interface to see correctly the only manually annotated frames.',
+                      'User instructions', wx.OK | wx.ICON_INFORMATION)
         self.statusbar.SetStatusText("Help")
+
 
     def homeButton(self, event):
         self.image_panel.resetView()
@@ -765,8 +782,6 @@ class MainFrame(wx.Frame):
 
         # Reading the existing dataset,if already present
         try:
-            # self.dataFrame = pd.read_hdf(os.path.join(self.dir, 'CollectedData_' + self.scorer + '.h5'),
-            #                              'df_with_missing')
             self.dataFrame = pd.read_pickle(self.filename)
             self.dataFrame.sort_index(inplace=True)
             self.prev.Enable(True)
@@ -804,6 +819,8 @@ class MainFrame(wx.Frame):
                                                        names=['scorer', 'bodyparts', 'coords'])
                     frame = pd.DataFrame(a, columns=index, index=self.relativeimagenames)
                     self.dataFrame = pd.concat([self.dataFrame, frame], axis=1)
+                self.dataFrame.to_pickle(self.filename)
+                self.dataFrame.to_csv(self.filename + '.csv')
             self.iter = 0
 
         # Reading the image name
@@ -1034,16 +1051,18 @@ class MainFrame(wx.Frame):
             else:
                 continue
 
-            circle = [
-                patches.Circle((self.points[0], self.points[1]), radius=self.markerSize, fc=color, alpha=self.alpha)]
-            self.axes.add_patch(circle[0])
-            self.dr = DraggablePoint(circle[0], self.bodyparts[bpindex])
-            self.dr.connect()
-            self.dr.coords = MainFrame.getLabels(self, self.iter)[bpindex]
-            self.drs.append(self.dr)
-            self.updatedCoords.append(self.dr.coords)
-            if np.isnan(self.points)[0] == False:
-                self.buttonCounter.append(bpindex)
+            if self.points[0] != -1:
+
+                circle = [
+                    patches.Circle((self.points[0], self.points[1]), radius=self.markerSize, fc=color, alpha=self.alpha)]
+                self.axes.add_patch(circle[0])
+                self.dr = DraggablePoint(circle[0], self.bodyparts[bpindex])
+                self.dr.connect()
+                self.dr.coords = MainFrame.getLabels(self, self.iter)[bpindex]
+                self.drs.append(self.dr)
+                self.updatedCoords.append(self.dr.coords)
+                if np.isnan(self.points)[0] == False:
+                    self.buttonCounter.append(bpindex)
 
 
 
@@ -1093,6 +1112,20 @@ class MainFrame(wx.Frame):
         MainFrame.updateZoomPan(self)
         # Windows compatible
         self.dataFrame.sort_index(inplace=True)
+
+
+        #if annotation assistance was invoked, and user is saving, he wants to consider the automatically annotated frames.
+        #We need then to make them all positive in their coordinates (ann. assistance have negative x)
+
+        annotated = np.where(np.isnan(self.dataFrame.iloc[:, 0].values) == False)[0]
+
+        for i in self.frame_selected_for_annotation_auto:
+
+            for j in range(0, len(self.bodyparts) + 1):
+                if i  in annotated:
+                    self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i] = np.abs(self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[i])
+
+
         self.dataFrame.to_csv(os.path.join( self.filename + ".csv"))
 
         self.dataFrame.to_pickle(self.filename)  # where to save it, usually as a .pkl
@@ -1100,7 +1133,7 @@ class MainFrame(wx.Frame):
         # if not os.path.isdir(os.path.join(self.address,self.name + 'annotation')):
         #     os.mkdir(os.path.join(self.address,self.name + 'annotation'))
 
-        annotated = np.where(np.isnan(self.dataFrame.iloc[:, 0].values) == False)[0]
+
 
         print(len(annotated))
         # for j in range(0, len(annotated)):

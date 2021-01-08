@@ -72,7 +72,7 @@ class Frame_main(wx.Frame):
             name = self.notebook.GetPageText(p)
 
             fileMenu.Append(p+1,"%s\tCtrl+%d" % (name,p),"Go to the %s page" % (name))
-            self.Bind(wx.EVT_MENU,self.GoToPage,id=p)
+            self.Bind(wx.EVT_MENU,self.GoToPage,id=p+1)
 
 
         fileMenu.AppendSeparator()
@@ -97,7 +97,7 @@ class Frame_main(wx.Frame):
         menubar.Enable(self.notebook.GetSelection()+1, False)
 
     def GoToPage(self, evt):
-        self.notebook.ChangeSelection(evt.GetId())
+        self.notebook.ChangeSelection(evt.GetId()-1)
         self.AdjustMenus(evt)
 
     def AdjustMenus(self, evt):
@@ -109,7 +109,7 @@ class Frame_main(wx.Frame):
         ### Disable current page on tab menu
         ### because the tabmenu item id's match the index
         ### of the notebook page index, this works
-        for page in range(self.notebook.GetPageCount()):
+        for page in range(1,self.notebook.GetPageCount()+1):
             if page == self.notebook.GetSelection()+1:
                 ### The Menubar can enable any menu item by ID alone
                 mbar.Enable(page, False)
