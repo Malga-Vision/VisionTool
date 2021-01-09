@@ -338,7 +338,7 @@ class Label_frames(wx.Panel):
 
         self.index = event.GetSelection()
 
-        for i in range(0,3):
+        for i in range(0,2):
             self.Extract_frames_options.Check(i, False)
         self.Extract_frames_options.Check(self.index, True)
         self.Extract_frames_options.SetSelection(self.index)
