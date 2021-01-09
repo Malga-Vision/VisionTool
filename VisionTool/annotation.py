@@ -125,7 +125,7 @@ class Label_frames(wx.Panel):
         self.does_annotation_exist.Enable(False)
         sizer_6.Add(self.does_annotation_exist, flag=wx.BOTTOM)
         self.ok.Bind(wx.EVT_BUTTON, self.label_frames)
-        list_options = ['Uniform','K-means','Manual']
+        list_options = ['Uniform','K-means']
         #self.Extract_frames_options = wx.CheckListBox(self, -1, (400, 25), wx.DefaultSize, list_options)
         self.Extract_frames_options = wx.CheckListBox(self, -1, (400, 25), wx.DefaultSize, list_options)
 
