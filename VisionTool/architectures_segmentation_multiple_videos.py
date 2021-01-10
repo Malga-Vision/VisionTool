@@ -99,12 +99,15 @@ class unet_multiple_videos():
             self.frames.append('Extracted_frames_'+ self.name_video_list[i])
             self.annotations.append('Annotation_' + self.name_video_list[i] + '_' + self.scorer)
 
-
-        self.data_preparing()
-        if self.error ==1:
-            return
-
         if train_flag==1:
+            self.data_preparing()
+            if self.error == 1:
+                return
+            if self.flag_no_ann == 0:
+                wx.MessageBox('Did you perform your annotation for at least one video?\n '
+                              'No annotation found in your files, please label frames, save and re-run'
+                              , 'Error!', wx.OK | wx.ICON_ERROR)
+                return
             self.train()
         self.test()
 
@@ -129,6 +132,7 @@ class unet_multiple_videos():
     def data_preparing(self):
 
         addresss = self.address
+        self.flag_no_ann = 0
 
         for video_index in range (0,self.number_videos):
 
@@ -138,7 +142,6 @@ class unet_multiple_videos():
                 self.dataFrame = pd.read_pickle(self.annotation_file)
             except:
                 wx.MessageBox('Annotations reading error\n '
-                              'Annotation not found'
                               , 'Error!', wx.OK | wx.ICON_ERROR)
                 self.error = 1
                 return
@@ -170,6 +173,10 @@ class unet_multiple_videos():
 
             if len(self.annotated)==0:
                 continue
+            else:
+                self.flag_no_ann = self.flag_no_ann or 1
+
+
 
 
             img = imread(self.image_folder + os.sep + files_original_name[0])
@@ -408,7 +415,9 @@ class unet_multiple_videos():
 
             self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
                                                      self.dataFrame.iloc[:, 0].values > 0) == True)[0]
-
+            #
+            # if len(self.annotated) == 0:
+            #     return
             for i in range(0, len(self.annotated)):
                 files_original_name.append(files[self.annotated[i]])
             #files = np.unique(files_original_name)

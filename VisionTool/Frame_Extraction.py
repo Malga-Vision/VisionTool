@@ -102,7 +102,7 @@ class extract_Frames(wx.Panel):
             num_frame_automatic = int(self.annotation.get_Text(4))
 
             my_list = list(range(start,
-                                 end))  # list of integers from 1 to 99                # adjust this boundaries to fit your needs
+                                 end))  # list of integers from 1 to end                # adjust this boundaries to fit your needs
             random.shuffle(my_list)
 
             if num_frame_annotated < (end - start):

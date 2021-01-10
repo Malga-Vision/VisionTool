@@ -48,6 +48,9 @@ class routine():
             fdir = dlg.GetPath() + "/"
             dlg.SetPath(fdir)
             filename = self.ask()
+            if filename=="":
+                wx.MessageBox("Please, insert a valid name!")
+                return""
         else:
             return ""
         self.address = os.path.join(dlg.GetPath(),filename)

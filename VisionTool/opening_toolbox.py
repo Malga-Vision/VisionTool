@@ -336,7 +336,7 @@ class MainFrame(wx.Frame):
         self.cancel_annotation = wx.Button(self.widget_panel, id=wx.ID_ANY, label="Cancel")
         widgetsizer.Add(self.cancel_annotation, 1, wx.ALL, 15)
         self.cancel_annotation.Bind(wx.EVT_BUTTON, self.annotation_reset)
-        self.cancel_annotation.Enable(False)
+        self.cancel_annotation.Enable(True)
         self.annotation.Enable(False)
         self.next_labeled_annotated.Enable(False)
         self.widget_panel.SetSizer(widgetsizer)
@@ -569,13 +569,18 @@ class MainFrame(wx.Frame):
 
         nextFilemsg = wx.MessageBox('Are you sure you want annotation-assisted?', 'Confirm?',
                                     wx.YES_NO | wx.ICON_INFORMATION)
-        try:
-            self.dataFrame = pd.read_pickle(self.filename)
-        except:
+
+        self.dataFrame_to_check_Saving = pd.read_pickle(self.filename)
+
+        self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame_to_check_Saving.iloc[:, 0].values) == False),
+                                                 self.dataFrame_to_check_Saving.iloc[:, 0].values > 0) == True)[0]
+
+        if len(self.annotated) == 0:
             wx.MessageBox('Are you sure you saved your annotation masks? \n '
                           'Annotation not found'
                           , 'Error!', wx.OK | wx.ICON_ERROR)
             return
+
         if nextFilemsg == 2:
             print(
                 "Proceeding with assistance")
@@ -602,8 +607,6 @@ class MainFrame(wx.Frame):
         else:
             return
 
-
-
     def helpButton(self, event):
         """
         Opens Instructions
@@ -613,7 +616,6 @@ class MainFrame(wx.Frame):
                       '\n\n1. Select a body part using the radio buttons to perform annotation (you can change preferences file editing the text to modify the label names, or change the preferences file). \n\n2. Right click on the image to add the selected label (the next one will be automatically available). \n The label will be added as a circle filled with the correpondent color (radius = marker size).\n\n3. Use the slide and checkbox to change marker size (important, for the training the marker size contained in preferences_file.txt will be used). \n\n4. Place the mouse pointer on a label to see its name. \n\n5. Use left click to drag a label in order to change the annotation position.  \n\n6. Right click to add the next available label. Or use the middle button to delete an inserted label. \n\n7. Click Next/Previous to move to the next/previous frame. Use the checkbox annot.only/ annot.auto only to view the frames randomly extracted for the annotation/annotation assistance\n Uncheck to view the frames in sequential order \n It is possible to add a missing label with the same system.\n \n8. When finished annotation, click \'Save\' to save all the labels as a .h5 file and .csv file. \n\n9. Click \'annotation_assistance\' to perform the automatic annotation procedure (Important! You have to select a number of frames to automaically detect in the main GUI of the software, or it would not be available \n 10. Use \'Cancel\' to delete the results of a prediction or of a automatic annotation procedure. You may need to close and re-open annotation interface to see correctly the only manually annotated frames.',
                       'User instructions', wx.OK | wx.ICON_INFORMATION)
         self.statusbar.SetStatusText("Help")
-
 
     def homeButton(self, event):
         self.image_panel.resetView()
@@ -649,8 +651,6 @@ class MainFrame(wx.Frame):
                 self.counter_frames = self.last_counter_Frames_value
                 if self.iter ==0:
                     self.iter = self.last_iter_value
-
-
 
     def next_labeled_annotated_check(self, event):
 
@@ -912,6 +912,10 @@ class MainFrame(wx.Frame):
         #  Checks for the last image and disables the Next button
         if len(self.index) - self.iter == 1:
             self.next.Enable(False)
+            wx.MessageBox('There are no more frames to annotate\n'
+                          'click on previous to see previous frames \n '
+                          'Frames finished!'
+                          , 'Frame finished!', wx.OK | wx.ICON_INFORMATION)
             # self.next_labeled.Enable(False)
             # self.next_labeled_annotated.Enable(False)
 
@@ -922,12 +926,20 @@ class MainFrame(wx.Frame):
 
             if self.counter_frames == len(self.frame_selected_for_annotation):
                 self.next.Enable(False)
-                self.next_labeled.Enable(False)
+                wx.MessageBox('There are no more frames to annotate\n'
+                              'De-select annot.only to continue view frame in sequential order or click on previous \n '
+                              'Frames finished!'
+                              , 'Frame finished!', wx.OK | wx.ICON_INFORMATION)
+                # self.next_labeled.Enable(False)
                 return
         elif self.next_labeled_annotated.GetValue():
 
             if self.counter_frames == len(self.frame_selected_for_annotation_auto):
                 self.next.Enable(False)
+                wx.MessageBox('There are no more frames automatically annotated\n'
+                              'De-select annot._auto only to continue view frame in sequential order or click on previous \n '
+                              'Frames finished!'
+                              , 'Frame finished!', wx.OK | wx.ICON_INFORMATION)
                 # self.next_labeled.Enable(False)
                 # self.next_labeled_annotated.Enable(False)
                 return
@@ -967,6 +979,7 @@ class MainFrame(wx.Frame):
 
     def find(self, s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
+
     def prevImage(self, event):
         """
         Checks the previous Image and enables user to move the annotations.
@@ -1023,7 +1036,6 @@ class MainFrame(wx.Frame):
                              self.dataFrame[self.scorer][bp]['y'].values[self.iter], bp, bpindex]]
             self.previous_image_points.append(image_points)
         return (self.previous_image_points)
-
 
     def plot(self, img):
         """
@@ -1147,10 +1159,6 @@ class MainFrame(wx.Frame):
         #                        int(round(self.markerSize * (2 ** 4))), (255, 255, 255), thickness=-1, shift=4)
         #         cv2.imwrite(os.path.join(self.address, self.name + 'annotation', ("{:02d}".format(i))+self.relativeimagenames[annotated[j]]),
         #                 ann)
-
-
-
-
 
     def onChecked(self, event):
         self.cb = event.GetEventObject()

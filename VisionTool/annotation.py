@@ -232,7 +232,7 @@ class Label_frames(wx.Panel):
         if not os.path.isfile(self.file_preferences):
             wx.MessageBox('First, select the preferences for the estimation', 'Preferences missing', wx.OK | wx.ICON_INFORMATION)
             return
-        if not self.does_annotation_exist.GetValue():
+        if not self.does_annotation_exist.GetValue() and self.index_video!=len(self.video_list_text)-1:
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
         else:

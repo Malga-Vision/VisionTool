@@ -56,6 +56,7 @@ class unet():
         self.annotation_file = os.path.join(address,annotation_file)
         self.bodyparts = bodyparts
         self.colors = colors
+        self.error = 0
         self.single_labels = single_labels
         self.architecture = architecture
         self.backbone = backbone
@@ -111,7 +112,9 @@ class unet():
                                                      self.dataFrame.iloc[:, 0].values > 0) == True)[0]
         if train_flag==1:
             self.train()
-        self.test()
+
+        if self.error!=1:
+            self.test()
 
 
 
@@ -160,6 +163,14 @@ class unet():
 
 
         #self.num_bodyparts =1
+
+        if len(self.annotated)==0:
+            wx.MessageBox('Did you save your annotation?\n '
+                          'No annotation found in your file, please save and re-run'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            self.error = 1
+            return
+
         for i in range(0, len(self.annotated)):
             files_original_name.append(self.dataFrame[self.dataFrame.columns[0]]._stat_axis[self.annotated[i]][7:])
 
@@ -357,6 +368,14 @@ class unet():
 
         self.annotated = np.where(np.bitwise_and((np.isnan(self.dataFrame.iloc[:, 0].values) == False),
                                                  self.dataFrame.iloc[:, 0].values > 0) == True)[0]
+
+        # if len(self.annotated)==0:
+        #     wx.MessageBox('Did you save your annotation?\n '
+        #                   'No annotation found in your file, please save and re-run'
+        #                   , 'Error!', wx.OK | wx.ICON_ERROR)
+        #     self.error = 1
+        #     return
+
         for i in range(0, len(self.annotated)):
             files_original_name.append(files[self.annotated[i]])
         #files = np.unique(files_original_name)
@@ -369,6 +388,8 @@ class unet():
         counter = 0
 
         if self.annotation_assistance==0:
+
+
 
             self.X_test = np.zeros((len(files)- len(self.annotated), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
 
@@ -393,6 +414,29 @@ class unet():
             temporary = np.asarray(temporary)
             self.frame_selected_for_annotation = temporary.astype(int)
             self.frame_selected_for_annotation=np.sort(self.frame_selected_for_annotation)
+
+            if len(self.frame_selected_for_annotation)==0:
+                filename = self.ask()
+                if filename=="":
+                    return
+                else:
+                    num_frame_automatic = int(filename)
+                    if num_frame_automatic>len(files):
+                        wx.MessageBox('Error! Number of frames must be lower than the total number of frames\n '
+                                      'Input error'
+                                      , 'Error!', wx.OK | wx.ICON_ERROR)
+                    my_list = list(range(0,
+                                         len(files)))  # list of integers from 1 to end                # adjust this boundaries to fit your needs
+                    random.shuffle(my_list)
+                    self.frame_selected_for_annotation = my_list[0:num_frame_automatic]
+                    output = open(os.path.join(os.path.dirname(self.annotation_file),
+                                                      self.name_video_list + '_index_annotation_auto.txt'), 'w')
+                    for fra in self.frame_selected_for_annotation:
+                        output.writelines(str(fra))
+                        output.writelines('\n')
+                    output.close()
+
+
             self.X_test = np.zeros((len(self.frame_selected_for_annotation), self.IMG_HEIGHT, self.IMG_WIDTH, self.IMG_CHANNELS), dtype=np.uint8)
 
             for l in range(0,len(files)):
@@ -636,3 +680,11 @@ class unet():
                            int(round(self.markerSize * (2 ** 4))), self.colors[i]*255, thickness=-1, shift=4)
             cv2.imwrite(os.path.join(OUTPUT, name),
                         image)
+
+    def ask(self,parent=None, message='Attention:\n you did not input the number of frames to automatically detect in previous interface \n Please, fill the following textbox with such number or cancel'):
+        default_value = ""
+        dlg = wx.TextEntryDialog(parent, message, value=default_value)
+        dlg.ShowModal()
+        result = dlg.GetValue()
+        dlg.Destroy()
+        return result
