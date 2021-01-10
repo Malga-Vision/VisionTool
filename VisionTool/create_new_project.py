@@ -32,10 +32,11 @@ class routine():
     
     
     def ask(self,parent=None, message='insert name for project'):
+        result = ""
         default_value = "New_project_" + str(date.today())
         dlg = wx.TextEntryDialog(parent, message, value=default_value)
-        dlg.ShowModal()
-        result = dlg.GetValue()
+        if dlg.ShowModal() == wx.ID_OK:
+            result = dlg.GetValue()
         dlg.Destroy()
         return result
     
