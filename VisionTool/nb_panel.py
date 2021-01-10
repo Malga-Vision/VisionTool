@@ -51,9 +51,6 @@ class nb_panel_features(wx.Panel):
         self.parent.Refresh()
         self.Refresh()
 
-
-
-
     def Load_Videos(self,e):
 
         if self.address == "":
@@ -76,11 +73,13 @@ class nb_panel_features(wx.Panel):
                         "The project already contains videos.\n"
                         "Do you want to add new videos?", "Confirm",
                         wx.YES_NO | wx.NO_DEFAULT, self) == wx.NO:
+
                     self.frame = Label_frames(self, self.size, os.path.join(self.address , "file_configuration.txt"))
                     self.Setsizer3()
                     self.flag_was_already_open = 1
 
                 else:
+                    self.flag_was_already_open = 1
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
@@ -95,9 +94,8 @@ class nb_panel_features(wx.Panel):
                         return  # the user changed their mind
 
                     if self.flag_was_already_open:
-                        self.frame.Destroy()
+                        self.frame.destroy()
                         self.Update()
-
                     pathname = fileDialog.GetPaths()
 
                 # videos = os.listdir(dlg.GetPath())
@@ -133,6 +131,7 @@ class nb_panel_features(wx.Panel):
                 self.config_file.close()
                 self.frame = Label_frames(self,self.size,os.path.join(self.address , "file_configuration.txt"))
                 self.Setsizer3()
+
     # open annotation interface
 
     def update_address(self,address):
@@ -140,6 +139,7 @@ class nb_panel_features(wx.Panel):
         #if a project was already open, we want to close its interface
         try:
             self.frame.Destroy()
+            self.flag_was_already_open=0
             self.Update()
         except:
             #otherwise we do not need this step

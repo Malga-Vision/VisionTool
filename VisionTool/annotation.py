@@ -196,7 +196,8 @@ class Label_frames(wx.Panel):
         #initial selection
         self.read_videos_for_length()
         self.check_existence_annoatation()
-        self.Refresh()
+        self.Layout()
+        self.Update()
      
     def find(self,s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
@@ -313,7 +314,6 @@ class Label_frames(wx.Panel):
                 pass
 
 
-
     def Get_annotation_for_deeplabcut_compat(self):
         return self.annotated
 
@@ -404,14 +404,10 @@ class Label_frames(wx.Panel):
             self.does_annotation_exist.SetValue(False)
 
 
-
-
     def check_labelF(self,event):
 
 
         Open_interface.show(None,self,(700,700),self.address)
-
-
 
 
     def label_frames(self,event):
