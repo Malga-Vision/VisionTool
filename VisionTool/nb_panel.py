@@ -137,6 +137,13 @@ class nb_panel_features(wx.Panel):
 
     def update_address(self,address):
         self.address = address
+        #if a project was already open, we want to close its interface
+        try:
+            self.frame.Destroy()
+            self.Update()
+        except:
+            #otherwise we do not need this step
+            pass
 
 class nb_panel_pose(wx.Panel):
     def __init__(self,parent,name,menu,menuName,address):

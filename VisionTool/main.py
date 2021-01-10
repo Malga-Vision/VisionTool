@@ -10,6 +10,7 @@ class Notebook(wx.Notebook):
 
     def __init__(self,parent,address,size):
         self.address = address
+        self.parent = parent
         wx.Notebook.__init__(self,parent=parent,size = size)
         self.page_features = features_Extractor(self,size,self.address)
         self.page_pose = pose_estimation(self,self.address)
@@ -139,6 +140,7 @@ class Frame_main(wx.Frame):
         initiate = routine()
         self.address = initiate.open_existing_project()
         self.notebook.update_address(self.address)
+
         pass
 
 def main():

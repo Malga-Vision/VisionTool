@@ -160,7 +160,12 @@ class MainFrame(wx.Frame):
     def __init__(self,parent, video_list_with_address,index_video,Label_frame, extract_frame_option, config, imtypes):
         # Settting the GUI size and panels design
         self.config = config
+        self.parent = parent
+
+        self.parent.parent_frame.parent.parent.Disable()
         preferences_file =  os.path.dirname(self.config) + '//annotation_options.txt'
+
+
 
         try:
             file = open(preferences_file)
@@ -177,7 +182,6 @@ class MainFrame(wx.Frame):
         for i in range(0, len(self.pref)):
             self.pref[i] = self.pref[i][:-1]
         self.options_frame = extract_frame_option
-
 
         self.video_list_with_address = video_list_with_address
         self.index_video = index_video
@@ -236,7 +240,7 @@ class MainFrame(wx.Frame):
         self.imtypes = imtypes  # imagetypes to look for in folder e.g. *.png
 
         self.statusbar = self.CreateStatusBar()
-        self.statusbar.SetStatusText("Looking for a folder to start labeling. Click 'Load frames' to begin.")
+        self.statusbar.SetStatusText("Frames correctly loaded")
         self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyPressed)
 
         self.SetSizeHints(wx.Size(self.gui_size))  # This sets the minimum size of the GUI. It can scale now!
@@ -262,9 +266,6 @@ class MainFrame(wx.Frame):
         # Add Buttons to the WidgetPanel and bind them to their respective functions.
 
         widgetsizer = wx.WrapSizer(orient=wx.HORIZONTAL)
-        self.load = wx.Button(self.widget_panel, id=wx.ID_ANY, label="Load frames")
-        widgetsizer.Add(self.load, 1, wx.ALL, 15)
-        self.load.Bind(wx.EVT_BUTTON, self.browseDir)
 
         self.prev = wx.Button(self.widget_panel, id=wx.ID_ANY, label="<<Previous")
         widgetsizer.Add(self.prev, 1, wx.ALL, 15)
@@ -323,6 +324,7 @@ class MainFrame(wx.Frame):
         self.save = wx.Button(self.widget_panel, id=wx.ID_ANY, label="Save")
         widgetsizer.Add(self.save, 1, wx.ALL, 15)
         self.save.Bind(wx.EVT_BUTTON, self.saveDataSet)
+        self.Bind(wx.EVT_CLOSE, self.quitButton)
         self.save.Enable(False)
 
         #widgetsizer.AddStretchSpacer(5)
@@ -336,7 +338,7 @@ class MainFrame(wx.Frame):
         self.cancel_annotation = wx.Button(self.widget_panel, id=wx.ID_ANY, label="Cancel")
         widgetsizer.Add(self.cancel_annotation, 1, wx.ALL, 15)
         self.cancel_annotation.Bind(wx.EVT_BUTTON, self.annotation_reset)
-        self.cancel_annotation.Enable(True)
+        self.cancel_annotation.Enable(False)
         self.annotation.Enable(False)
         self.next_labeled_annotated.Enable(False)
         self.widget_panel.SetSizer(widgetsizer)
@@ -362,6 +364,7 @@ class MainFrame(wx.Frame):
         # xlim and ylim have actually changed before turning zoom off
         self.prezoom_xlim = []
         self.prezoom_ylim = []
+        self.browseDir()
 
     ###############################################################################################################################
     # BUTTONS FUNCTIONS FOR HOTKEYS
@@ -410,16 +413,30 @@ class MainFrame(wx.Frame):
         """
         self.statusbar.SetStatusText("Quitting now!")
 
+
+        '''
+           after the object opening_toolbox has been created, we have our annotations file saved, this file may be empty, but
+           a new control will be performed in the training or testing phase
+        '''
+
+        self.filename_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer + '.csv'
+        self.filename2_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer
+
+        if os.path.isfile(self.filename_to_check) and os.path.isfile(self.filename2_to_check):
+            self.parent.does_annotation_exist.SetValue(True)
+        else:
+            self.parent.does_annotation_exist.SetValue(False)
+
+
         nextFilemsg = wx.MessageBox('Are you sure you want to quit?', 'Quit?',
                                     wx.YES_NO | wx.ICON_INFORMATION)
         if nextFilemsg == 2:
             self.Destroy()
             print(
                 "You can now proceed with the deep learning-based analysis for the labels")
+            self.parent.parent_frame.parent.parent.Enable()
+            self.parent.parent_frame.Update()
 
-
-        else:
-            self.save.Enable(True)
 
     def highlight_max(self,s):
         '''
@@ -474,7 +491,6 @@ class MainFrame(wx.Frame):
         self.dataFrame.to_csv(os.path.join(self.filename + ".csv"))
         copyfile(os.path.join(self.filename + ".csv"), os.path.join(self.filename + "_MANUAL.csv"))
         self.dataFrame.to_pickle(self.filename)  # where to save it, usually as a .pkl
-        wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.load.GetId())
 
     def annotation_reset(self,event):
 
@@ -511,6 +527,7 @@ class MainFrame(wx.Frame):
 
 
         except:
+
             pass
 
     def find(self,s, ch):
@@ -623,7 +640,7 @@ class MainFrame(wx.Frame):
         MainFrame.updateZoomPan(self)
         self.zoom.SetValue(False)
         self.pan.SetValue(False)
-        self.statusbar.SetStatusText("")
+        self.statusbar.SetStatusText("Frames correctly loaded")
 
     def panButton(self, event):
         if self.pan.GetValue() == True:
@@ -742,18 +759,15 @@ class MainFrame(wx.Frame):
         """
         This function is to create a hotkey to skip up on the radio button panel.
         """
-        if self.rdb.GetSelection() < len(self.bodyparts) - 1:
+        if self.rdb.GetSelection() >0:
             self.rdb.SetSelection(self.rdb.GetSelection() - 1)
 
 
-    def browseDir(self, event):
+    def browseDir(self):
 
-
-
-        self.load.Enable(False)
         self.next.Enable(True)
         self.next_labeled.Enable(True)
-
+        self.cancel_annotation.Enable(True)
         self.save.Enable(True)
         self.annotation.Enable(True)
         self.next_labeled_annotated.Enable(True)
@@ -776,7 +790,7 @@ class MainFrame(wx.Frame):
             print("No images found!!")
 
         self.index = np.sort(imlist)
-        self.statusbar.SetStatusText('Working on folder: TEMP')
+        self.statusbar.SetStatusText('Working on video:' + self.videos)
         self.relativeimagenames = ['labeled' + n.split('labeled')[0] for n in
                                    self.index]  # [n.split(self.project_path+'/')[1] for n in self.index]
 
@@ -851,7 +865,7 @@ class MainFrame(wx.Frame):
         # checks for unique bodyparts
         if len(self.bodyparts) != len(set(self.bodyparts)):
             print(
-                "Error - bodyparts must have unique labels! Please choose unique bodyparts in config.yaml file and try again. Quitting for now!")
+                "Error - bodyparts must have unique labels! Change the name of labels in file annotation_options.txt or re-input a preferences file. Quitting for now!")
             self.Close(True)
 
         # Extracting the list of new labels
@@ -1160,6 +1174,7 @@ class MainFrame(wx.Frame):
         #         cv2.imwrite(os.path.join(self.address, self.name + 'annotation', ("{:02d}".format(i))+self.relativeimagenames[annotated[j]]),
         #                 ann)
 
+
     def onChecked(self, event):
         self.cb = event.GetEventObject()
         if self.cb.GetValue() == True:
@@ -1181,7 +1196,7 @@ class MainFrame(wx.Frame):
 
 def show(label_frames, video_list_with_address,index_video,config,index, imtypes=['*.png']):
     app = wx.App()
-    frame = MainFrame(None, video_list_with_address,index_video,label_frames,index, config, imtypes).Show()
+    frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).Show()
     app.MainLoop()
 
 

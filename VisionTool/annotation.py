@@ -37,7 +37,7 @@ class Label_frames(wx.Panel):
         wx.Panel.__init__(self, parent=parent)
         # variable initilization
         self.import_from_deeplabcut_flag = 0
-
+        self.parent_frame = parent
         self.method = "automatic"
         self.config = cfg
         # design the panel
@@ -423,6 +423,7 @@ class Label_frames(wx.Panel):
             if f_object.error == 1:
                 return
             opening_toolbox.show(self,self.video_list_with_address,self.index_video,self.config,self.index, imtypes=['*.png'],)
+
 
     def get_video_list(self):
         self.config_file = open(self.config, "r")
