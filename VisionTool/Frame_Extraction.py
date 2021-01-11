@@ -67,10 +67,11 @@ class extract_Frames(wx.Panel):
         if index_type == 0:
             self.uniform()
             self.read_videos_for_length()
-        elif index_type == 1:
-            self.k_means()
         else:
-            self.manual()
+            self.uniform()
+            self.read_videos_for_length()
+            #self.k_means() will be implemented
+
 
     def find(self, s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
