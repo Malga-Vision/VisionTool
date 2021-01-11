@@ -389,6 +389,6 @@ class test ():
         self.dataFrame = pd.read_pickle(os.path.join(self.CONFIG_PATH , 'Annotation_sample_video.avi_test'))
         self.dataFrame.to_pickle(os.path.join(os.path.dirname(self.config),'Annotation_sample_video.avi_test'))
         copyfile(os.path.join(self.CONFIG_PATH , 'Annotation_sample_video.avi_test.csv'),os.path.join(os.path.dirname(self.config) , 'Annotation_sample_video.avi_test.csv'))
-        copyfile(os.path.join(self.CONFIG_PATH , '_index_annotation.txt'),os.path.join(os.path.dirname(self.config) , '_index_annotation.txt'))
-        copyfile(os.path.join(self.CONFIG_PATH , '_index_annotation_auto.txt'),os.path.join(os.path.dirname(self.config) , '_index_annotation_auto.txt'))
+        copyfile(os.path.join(self.CONFIG_PATH , 'sample_video.avi_index_annotation.txt'),os.path.join(os.path.dirname(self.config) , 'sample_video.avi_index_annotation.txt'))
+        copyfile(os.path.join(self.CONFIG_PATH , 'sample_video.avi_index_annotation_auto.txt'),os.path.join(os.path.dirname(self.config) , 'sample_video.avi_index_annotation_auto.txt'))
         copyfile(os.path.join(self.CONFIG_PATH , 'annotation_options.txt'),os.path.join(os.path.dirname(self.config) , 'annotation_options.txt'))
