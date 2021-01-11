@@ -68,8 +68,9 @@ test.load_testing_annotation(test.config_file_text)
 # needed for proceeding with manual or automatic annotation, code to handle the rest of operations 
 
 test.annotate(0,test.config_file_text)
+# this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code.
 
-# set the preferences for the neural network prediction 
+# set the preferences for the neural network prediction (at the end press Ok)
 
 test.preferences_annotation()
 
