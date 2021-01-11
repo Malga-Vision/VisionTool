@@ -422,10 +422,7 @@ class MainFrame(wx.Frame):
         self.filename_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer + '.csv'
         self.filename2_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer
 
-        if os.path.isfile(self.filename_to_check) and os.path.isfile(self.filename2_to_check):
-            self.parent.does_annotation_exist.SetValue(True)
-        else:
-            self.parent.does_annotation_exist.SetValue(False)
+        self.parent.check_existence_annoatation()
 
 
         nextFilemsg = wx.MessageBox('Are you sure you want to quit?', 'Quit?',

@@ -60,8 +60,6 @@ class Frame_main(wx.Frame):
         # fileMenu.Append(wx.ID_SAVE, '&Save')
         fileMenu.AppendSeparator()
 
-       
-
         qmi = wx.MenuItem(fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W')
         fileMenu.Append(qmi)
 
