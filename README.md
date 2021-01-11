@@ -57,15 +57,12 @@ test.new_project_routine()
 
 test.open_project()
 
-# add videos to the project, or load the ones already added
+# load the video provided
 
 test.Load_Videos()
 
-# set preferences for annotation 
+# use the next line of code to download existing annotation for testing  
 
-Frame_selection(None, os.path.dirname(test.config_file_text) + os.sep + 'annotation_options.txt')
-
-# if you are using the sample_video uploaded in the repository, use the next line of code to download existing annotation for testing  
 test.load_testing_annotation(test.config_file_text)
 
 # needed for proceeding with manual or automatic annotation, code to handle the rest of operations 
