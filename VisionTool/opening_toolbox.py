@@ -161,8 +161,8 @@ class MainFrame(wx.Frame):
         # Settting the GUI size and panels design
         self.config = config
         self.parent = parent
-
-        self.parent.parent_frame.parent.parent.Disable()
+        if self.parent!=None:
+            self.parent.parent_frame.parent.parent.Disable()
         preferences_file =  os.path.dirname(self.config) + '//annotation_options.txt'
 
 
@@ -422,17 +422,18 @@ class MainFrame(wx.Frame):
         self.filename_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer + '.csv'
         self.filename2_to_check = self.address + os.sep + "Annotation_" + self.title_video + '_' + self.scorer
 
-        self.parent.check_existence_annoatation()
+        if self.parent != None:
+            self.parent.check_existence_annoatation()
 
 
         nextFilemsg = wx.MessageBox('Are you sure you want to quit?', 'Quit?',
                                     wx.YES_NO | wx.ICON_INFORMATION)
         if nextFilemsg == 2:
             self.Destroy()
-            print(
-                "You can now proceed with the deep learning-based analysis for the labels")
-            self.parent.parent_frame.parent.parent.Enable()
-            self.parent.parent_frame.Update()
+            print("You can now proceed with the deep learning-based analysis for the labels")
+            if self.parent != None:
+                self.parent.parent_frame.parent.parent.Enable()
+                self.parent.parent_frame.Update()
 
 
     def highlight_max(self,s):
