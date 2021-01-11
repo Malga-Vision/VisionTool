@@ -579,7 +579,7 @@ class unet():
     def prediction_to_annotation(self,annotation):
         # compute_corresponding_annotation_point
        # annotation = cv2.cvtColor(annotation, cv2.COLOR_BGR2GRAY)
-        thresh, annotation = cv2.threshold(annotation, 0.99, 1, cv2.THRESH_BINARY)
+        thresh, annotation = cv2.threshold(annotation, 150, 255, cv2.THRESH_BINARY)
         contour, hierarchy = cv2.findContours(annotation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         if contour != []:
             max_area = 0
@@ -628,7 +628,7 @@ class unet():
         confidence_image[np.where(confidence_image!=0)]=1;
 
         mask = np.zeros_like(confidence_image)
-        thresh, annotation = cv2.threshold(annotation, 0.99, 1, cv2.THRESH_BINARY)
+        thresh, annotation = cv2.threshold(annotation, 150, 255, cv2.THRESH_BINARY)
         contour, hierarchy = cv2.findContours(annotation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         if contour != []:
             max_area = 0
