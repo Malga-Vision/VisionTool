@@ -131,6 +131,9 @@ class unet_multiple_videos():
 
     def data_preparing(self):
 
+        # to control that first video with annotation is analyzed at first, so that we do not get errors
+        #first time this variable is 0
+        self.flag_this_video_is_not_annotated = 0
         addresss = self.address
         self.flag_no_ann = 0
 
@@ -173,8 +176,13 @@ class unet_multiple_videos():
 
             if len(self.annotated)==0:
                 continue
+
             else:
                 self.flag_no_ann = self.flag_no_ann or 1
+                if self.flag_this_video_is_not_annotated==0:
+                    self.flag_this_video_is_not_annotated = 1
+                else:
+                    self.flag_this_video_is_not_annotated = 2
 
 
 
@@ -243,7 +251,7 @@ class unet_multiple_videos():
                 self.error = 1
                 return
             counter = 0
-            if video_index==0:
+            if self.flag_this_video_is_not_annotated==1:
                 self.X_train = X_train
                 self.Y_train = Y_train
 

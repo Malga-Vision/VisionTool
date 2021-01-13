@@ -27,7 +27,7 @@ class Open_interface(wx.Frame):
         # variable initilization
         self.method = "automatic"
         self.config = os.path.join(self.address , 'Architecture_Preferences.txt')
-        
+        self.Bind(wx.EVT_CLOSE,self.Onclose)
         # design the panel
         self.sizer = wx.GridBagSizer(5, 5)
 
@@ -157,7 +157,7 @@ class Open_interface(wx.Frame):
         self.sizer.Fit(self)
 
         self.Layout()
-        self.Show()
+        self.ShowModal()
      
 
     def on_focus(self,event):
@@ -218,9 +218,24 @@ class Open_interface(wx.Frame):
                           , 'Error!', wx.OK | wx.ICON_ERROR)
 
     def show(self,parent,gui_size,config):
-        app = wx.App()
-        frame = Open_interface(None, gui_size, config).Show()
-        app.MainLoop()
+
+        frame = Open_interface(parent, gui_size, config)
+
+
+    def ShowModal(self):
+        """
+        This function is the one giving the wx.FileDialog behavior
+        """
+        self._disabler = wx.WindowDisabler(self)
+        self.Show()
+        self.eventLoop = wx.GUIEventLoop()
+        self.eventLoop.Run()
+
+
+    def Onclose(self,e):
+        del self._disabler
+        self.eventLoop.Exit()
+        self.Destroy()
 
     def reset_create_training_dataset(self,event):
         """
@@ -231,10 +246,9 @@ class Open_interface(wx.Frame):
         except:
             pass
 
-        self.model_comparison_choice.SetSelection(1)
         self.userfeedback.SetSelection(0)
-        self.network_box.Hide()
-        self.networks_to_compare.Hide()
+        self.Batch.SetValue("1")
+        self.text.SetValue("0.001")
         self.net_choice.Enable(True)
         self.aug_choice.Enable(True)
         self.userfeedback_images.SetSelection(0)

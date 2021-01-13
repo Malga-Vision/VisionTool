@@ -94,8 +94,11 @@ class nb_panel_features(wx.Panel):
                         return  # the user changed their mind
 
                     if self.flag_was_already_open:
-                        self.frame.destroy()
-                        self.Update()
+                        try:
+                            self.frame.destroy()
+                            self.Update()
+                        except:
+                            pass
                     pathname = fileDialog.GetPaths()
 
                 # videos = os.listdir(dlg.GetPath())

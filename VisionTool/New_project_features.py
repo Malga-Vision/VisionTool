@@ -27,7 +27,7 @@ class Frame_selection(wx.Frame):
         screenHeight = 800
         self.gui_size = (800,800)
 
-        super().__init__(None, size = self.gui_size, title='Insert_preferences')
+        super().__init__(parent, size = self.gui_size, title='Insert_preferences')
 
 
         label1 = wx.StaticText(self, label="Bodyparts (separated by ;)", pos=(70, 80))
@@ -94,9 +94,8 @@ class Frame_selection(wx.Frame):
             wx.Dialog.__init__(self, parent)
 
     def show(self,parent,config):
-        app = wx.App()
         frame =  Frame_selection(parent,config)
-        app.MainLoop()
+
 
     if __name__ == '__main__':
         main()

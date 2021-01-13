@@ -135,9 +135,6 @@ class test ():
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
 
-        del self.app
-        self.app = wx.App()
-        self.app.MainLoop()
 
         self.config = config
         # uniform
@@ -362,9 +359,7 @@ class test ():
                 temporary = pref_ann.readlines()
                 self.scorer = temporary[1]
                 self.bodyparts = temporary[9:]
-        del self.app
-        self.app = wx.App()
-        self.app.MainLoop()
+
         if not self.does_annotation_exist:
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return

@@ -161,8 +161,7 @@ class MainFrame(wx.Frame):
         # Settting the GUI size and panels design
         self.config = config
         self.parent = parent
-        if self.parent!=None:
-            self.parent.parent_frame.parent.parent.Disable()
+
         preferences_file =  os.path.dirname(self.config) + '//annotation_options.txt'
 
 
@@ -231,7 +230,7 @@ class MainFrame(wx.Frame):
         except:
             wx.MessageBox(self.map + 'is not recognized as a valid map \n Settings color map to Pastel2'
               , 'Error!', wx.OK | wx.ICON_ERROR)
-            self.colormap = plt.get_cmap('inferno')
+            self.colormap = plt.get_cmap('Pastel2')
 
         self.colormap = self.colormap.reversed()
         self.name = 'Extracted_frames_' + self.title_video
@@ -407,6 +406,15 @@ class MainFrame(wx.Frame):
         self.axes.callbacks.connect('ylim_changed', self.onZoom)
         self.buttonCounter = MainFrame.plot(self, self.img)
 
+    def ShowModal(self):
+        """
+        This function is the one giving the wx.FileDialog behavior
+        """
+        self._disabler = wx.WindowDisabler(self)
+        self.Show()
+        self.eventLoop = wx.GUIEventLoop()
+        self.eventLoop.Run()
+
     def quitButton(self, event):
         """
         Asks user for its inputs and then quits the GUI
@@ -429,11 +437,11 @@ class MainFrame(wx.Frame):
         nextFilemsg = wx.MessageBox('Are you sure you want to quit?', 'Quit?',
                                     wx.YES_NO | wx.ICON_INFORMATION)
         if nextFilemsg == 2:
+            del self._disabler
+            self.eventLoop.Exit()
             self.Destroy()
-            print("You can now proceed with the deep learning-based analysis for the labels")
-            if self.parent != None:
-                self.parent.parent_frame.parent.parent.Enable()
-                self.parent.parent_frame.Update()
+            print("Annotation interface correctly closed, you may proceed with training")
+
 
 
     def highlight_max(self,s):
@@ -1191,11 +1199,21 @@ class MainFrame(wx.Frame):
             self.toolbar.zoom()
             self.zoom.SetValue(False)
 
+    def ShowModal(self):
+        """
+        This function is the one giving the wx.FileDialog behavior
+        """
+        self._disabler = wx.WindowDisabler(self)
+        self.Show()
+        self.eventLoop = wx.GUIEventLoop()
+        self.eventLoop.Run()
+
 
 def show(label_frames, video_list_with_address,index_video,config,index, imtypes=['*.png']):
-    app = wx.App()
-    frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).Show()
-    app.MainLoop()
+
+
+    frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).ShowModal()
+
 
 
 if __name__ == '__main__':

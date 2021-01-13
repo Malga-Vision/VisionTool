@@ -35,6 +35,7 @@ class Label_frames(wx.Panel):
     def __init__(self, parent,gui_size,cfg):
         """Constructor"""
         wx.Panel.__init__(self, parent=parent)
+        self.parent = parent
         # variable initilization
         self.import_from_deeplabcut_flag = 0
         self.parent_frame = parent
