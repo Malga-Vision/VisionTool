@@ -1,4 +1,4 @@
-absl-py==0.9.0
+absl-py==0.1.0
 astor==0.8.1
 astunparse==1.6.3
 cachetools==4.1.0
@@ -11,7 +11,7 @@ gast==0.3.3
 google-auth==1.16.1
 google-auth-oauthlib==0.4.1
 google-pasta==0.2.0
-grpcio==1.29.0
+grpcio==1.32.0
 h5py==2.10.0
 idna==2.9
 image-classifiers==1.0.0
@@ -25,10 +25,10 @@ Markdown==3.2.2
 matplotlib==3.3.0
 mock==4.0.2
 networkx==2.4
-numpy==1.18.5
+numpy==1.19.2
 oauthlib==3.1.0
 opencv-python==4.4.0.46
-opt-einsum==3.2.1
+opt-einsum==3.3.0
 pandas==1.0.4
 Pillow==7.1.2
 protobuf==3.12.2
@@ -48,10 +48,8 @@ scipy==1.4.1
 segmentation-models==1.0.1
 six==1.15.0
 sklearn==0.0
-tensorboard==2.2.2
-tensorboard-plugin-wit==1.6.0.post3
-tensorflow-estimator==1.13.0
-tensorflow-gpu>=2.4.0
+tensorboard==2.2.0
+tensorflow==2.2.0
 tensorflow-gpu-estimator==2.2.0
 termcolor==1.1.0
 threadpoolctl==2.1.0
