@@ -40,21 +40,38 @@ class test ():
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.CONFIG_PATH = os.path.dirname(os.path.join(self.ROOT_DIR, 'configuration.conf'))  # requires `import os`
         self.upload_existent = 0
-        self.app = wx.App()
-        self.app.MainLoop()
+
 
     def new_project_routine(self):
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
         initiate = routine()
+        self.app.MainLoop()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
-        pass
+
 
     def open_project(self):
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
         initiate = routine()
+        self.app.MainLoop()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
 
     def Load_Videos(self):
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
 
         if self.address == "":
 
@@ -80,6 +97,7 @@ class test ():
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
+
 
 
     def upload_new_Videos(self):
@@ -134,7 +152,12 @@ class test ():
 
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
-
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
 
         self.config = config
         # uniform
@@ -147,20 +170,17 @@ class test ():
 
         if not os.path.isfile(os.path.dirname(self.config) + os.sep + 'annotation_options.txt'):
 
-            Frame_selection(os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
+            Frame_selection(None,os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
         else:
             if wx.MessageBox(
                     "A set of preferences has already been saved.\n"
                     "Do you want to change your preferences?", "Confirm",
                     wx.YES_NO | wx.YES_DEFAULT, None) == wx.YES:
                 os.remove(os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
-                Frame_selection(self, os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
+                Frame_selection(None, os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
 
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
-
-
-
 
     def read_videos_for_length(self,num_annotated=0,num_auto_annotated=0):
 
@@ -288,22 +308,43 @@ class test ():
 
         self.cap.release()
 
-        self.view_annotation()
+
+
 
     def find(self, s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
 
 
     def view_annotation(self):
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
 
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
 
     def preferences_annotation(self):
-        Open_interface.show(None, self, (700, 700), self.address)
-
-
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
+        Open_interface.show(None, None, (700, 700), self.address)
+        try:
+            del self.app
+        except:
+            pass
     def check_and_train(self):
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
 
         self.address_proj = os.path.dirname(self.config)
 
@@ -338,7 +379,12 @@ class test ():
             pass
 
     def check_and_test(self):
-
+        try:
+            del self.app
+        except:
+            pass
+        self.app = wx.App()
+        self.app.MainLoop()
 
 
         self.address_proj = os.path.dirname(self.config)

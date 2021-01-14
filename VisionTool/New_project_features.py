@@ -49,7 +49,6 @@ class Frame_selection(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         # (Explicit call to MakeModal)
-        self.ShowModal()
 
     def OnClose(self, event):
         """
@@ -89,12 +88,9 @@ class Frame_selection(wx.Frame):
         file.close()
         self.Close()
 
-    class MyDialog1(wx.Dialog):
-        def __init__(self, parent):
-            wx.Dialog.__init__(self, parent)
-
     def show(self,parent,config):
-        frame =  Frame_selection(parent,config)
+
+        frame =  Frame_selection(parent,config).ShowModal()
 
 
     if __name__ == '__main__':
