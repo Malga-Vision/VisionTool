@@ -53,9 +53,9 @@ test = test()
 
 test.new_project_routine()
 
-# open the project
+[# alternatively open an existing project
 
-test.open_project()
+test.open_project()          ]
 
 # load the video provided
 
