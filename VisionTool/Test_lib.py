@@ -49,13 +49,14 @@ class test ():
         initiate = routine()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
-
+        wx.Yield()
 
     def open_project(self):
 
         initiate = routine()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
+        wx.Yield()
 
     def Load_Videos(self):
 
@@ -83,6 +84,7 @@ class test ():
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
+        wx.Yield()
 
 
 
@@ -165,6 +167,7 @@ class test ():
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
             wx.Yield()
+
     def read_videos_for_length(self,num_annotated=0,num_auto_annotated=0):
 
         self.cap = cv2.VideoCapture(self.video_list_with_address[self.index_video][:-1])
