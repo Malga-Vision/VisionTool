@@ -40,47 +40,25 @@ class test ():
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.CONFIG_PATH = os.path.dirname(os.path.join(self.ROOT_DIR, 'configuration.conf'))  # requires `import os`
         self.upload_existent = 0
-
+        self.app = wx.App()
+        self.app.MainLoop()
 
 
     def new_project_routine(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         initiate = routine()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
-        wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
-
 
 
     def open_project(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         initiate = routine()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
-        wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
-
 
     def Load_Videos(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         if self.address == "":
 
             error = wx.MessageBox("you need to create a new project or open an existing one, first!")
@@ -106,9 +84,7 @@ class test ():
             else:
                 self.upload_new_Videos()
 
-        wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
+
 
     def upload_new_Videos(self):
 
@@ -162,12 +138,8 @@ class test ():
 
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
+
         self.config = config
         # uniform
         self.annotation = os.path.dirname(self.config) + os.sep + 'annotation_options.txt'
@@ -193,8 +165,6 @@ class test ():
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
             wx.Yield()
-            self.app.ExitMainLoop()
-            del self.app
 
     def read_videos_for_length(self,num_annotated=0,num_auto_annotated=0):
 
@@ -332,38 +302,19 @@ class test ():
 
 
     def view_annotation(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
+
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
-
         wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
 
     def preferences_annotation(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         Open_interface.show(None, None, (700, 700), self.address)
         wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
-
+        
     def check_and_train(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -396,17 +347,9 @@ class test ():
             training(address = self.address,file_annotation = self.filename[:-4],image_folder = self.address + os.sep + self.name + os.sep,annotation_folder = os.path.join(self.address,self.name + 'annotation'),bodyparts = self.bodyparts,train_flag = 1,annotation_assistance=0)
             pass
 
-        wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
     def check_and_test(self):
 
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -446,10 +389,6 @@ class test ():
                              image_folder=self.address + os.sep + self.name + os.sep,
                              annotation_folder=os.path.join(self.address, self.name , 'annotation'),
                              bodyparts=self.bodyparts, train_flag=0,annotation_assistance=0)
-
-        wx.Yield()
-        self.app.ExitMainLoop()
-        del self.app
 
     def load_testing_annotation(self,config):
         self.upload_existent = 1
