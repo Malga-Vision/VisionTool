@@ -437,8 +437,9 @@ class MainFrame(wx.Frame):
         nextFilemsg = wx.MessageBox('Are you sure you want to quit?', 'Quit?',
                                     wx.YES_NO | wx.ICON_INFORMATION)
         if nextFilemsg == 2:
-            del self._disabler
-            self.eventLoop.Exit()
+            if self.parent != None:
+                del self._disabler
+                self.eventLoop.Exit()
             self.Destroy()
             print("Annotation interface correctly closed, you may proceed with training")
 
@@ -1210,9 +1211,12 @@ class MainFrame(wx.Frame):
 
 def show(label_frames, video_list_with_address,index_video,config,index, imtypes=['*.png']):
 
-
-    frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).ShowModal()
-
+    if label_frames!=None:
+        frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).ShowModal()
+    else:
+        app = wx.App()
+        frame = MainFrame(label_frames, video_list_with_address,index_video,label_frames,index, config, imtypes).Show()
+        app.MainLoop()
 
 
 if __name__ == '__main__':

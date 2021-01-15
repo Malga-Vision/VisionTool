@@ -312,7 +312,7 @@ class test ():
 
         Open_interface.show(None, None, (700, 700), self.address)
         wx.Yield()
-        
+
     def check_and_train(self):
 
         self.address_proj = os.path.dirname(self.config)

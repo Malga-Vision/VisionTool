@@ -26,6 +26,7 @@ class Open_interface(wx.Frame):
         self.address = address 
         # variable initilization
         self.method = "automatic"
+        self.parent = parent
         self.config = os.path.join(self.address , 'Architecture_Preferences.txt')
         self.Bind(wx.EVT_CLOSE,self.Onclose)
         # design the panel
@@ -157,7 +158,7 @@ class Open_interface(wx.Frame):
         self.sizer.Fit(self)
 
         self.Layout()
-        self.ShowModal()
+
      
 
     def on_focus(self,event):
@@ -218,9 +219,12 @@ class Open_interface(wx.Frame):
                           , 'Error!', wx.OK | wx.ICON_ERROR)
 
     def show(self,parent,gui_size,config):
-
-        frame = Open_interface(parent, gui_size, config)
-
+        if parent!=None:
+            frame = Open_interface(parent, gui_size, config).ShowModal()
+        else:
+            app = wx.App()
+            frame = Open_interface(parent, gui_size, config)
+            app.MainLoop()
 
     def ShowModal(self):
         """
@@ -233,8 +237,9 @@ class Open_interface(wx.Frame):
 
 
     def Onclose(self,e):
-        del self._disabler
-        self.eventLoop.Exit()
+        if self.parent!=None:
+            del self._disabler
+            self.eventLoop.Exit()
         self.Destroy()
 
     def reset_create_training_dataset(self,event):
