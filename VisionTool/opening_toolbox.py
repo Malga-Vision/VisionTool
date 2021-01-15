@@ -443,7 +443,6 @@ class MainFrame(wx.Frame):
             print("Annotation interface correctly closed, you may proceed with training")
 
 
-
     def highlight_max(self,s):
         '''
         highlight the maximum in a Series yellow.

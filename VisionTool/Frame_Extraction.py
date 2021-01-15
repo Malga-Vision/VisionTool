@@ -239,6 +239,8 @@ class extract_Frames(wx.Panel):
 
         progress.Destroy()
 
+        wx.Yield()
+
         self.cap.release()
 
     def processSents(self):

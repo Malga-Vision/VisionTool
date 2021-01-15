@@ -40,38 +40,24 @@ class test ():
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.CONFIG_PATH = os.path.dirname(os.path.join(self.ROOT_DIR, 'configuration.conf'))  # requires `import os`
         self.upload_existent = 0
+        self.app = wx.App()
+        self.app.MainLoop()
 
 
     def new_project_routine(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
+
         initiate = routine()
-        self.app.MainLoop()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
 
 
     def open_project(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
+
         initiate = routine()
-        self.app.MainLoop()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
 
     def Load_Videos(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
 
         if self.address == "":
 
@@ -152,12 +138,7 @@ class test ():
 
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
 
         self.config = config
         # uniform
@@ -171,6 +152,7 @@ class test ():
         if not os.path.isfile(os.path.dirname(self.config) + os.sep + 'annotation_options.txt'):
 
             Frame_selection(None,os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
+            wx.Yield()
         else:
             if wx.MessageBox(
                     "A set of preferences has already been saved.\n"
@@ -178,6 +160,7 @@ class test ():
                     wx.YES_NO | wx.YES_DEFAULT, None) == wx.YES:
                 os.remove(os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
                 Frame_selection(None, os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
+                wx.Yield()
 
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
@@ -198,8 +181,7 @@ class test ():
 
         self.cap.release()
 
-        if not os.path.isdir(self.address + os.sep + self.name):
-            os.mkdir(self.address + os.sep + self.name)
+
 
 
         if not self.upload_existent:
@@ -223,8 +205,10 @@ class test ():
                             frames = my_list[0:num_frame_annotated]
                             frames_annotated = my_list[num_frame_annotated:num_frame_automatic + num_frame_annotated]
                     address = os.path.dirname(self.config)
-                    p = open(os.path.join(address, '_index_annotation.txt'), 'w')
-                    p2 = open(os.path.join(address, '_index_annotation_auto.txt'), 'w')
+                    p = open(os.path.join(address, self.video_list_with_address[self.index_video][
+                                          self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1] + '_index_annotation.txt'), 'w')
+                    p2 = open(os.path.join(address,self.video_list_with_address[self.index_video][
+                                          self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1] +  '_index_annotation_auto.txt'), 'w')
 
                     for i in frames:
                         p.writelines(str(i))
@@ -281,6 +265,9 @@ class test ():
 
                 else:
                     return
+        else:
+            if not os.path.isdir(self.address + os.sep + self.name):
+                os.mkdir(self.address + os.sep + self.name)
         start = 0
         end = count
         self.frames_id = np.asarray(range(start, end, 1)).astype(int)
@@ -316,35 +303,18 @@ class test ():
 
 
     def view_annotation(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
 
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
+        wx.Yield()
 
     def preferences_annotation(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
+
         Open_interface.show(None, None, (700, 700), self.address)
-        try:
-            del self.app
-        except:
-            pass
+        wx.Yield()
+
     def check_and_train(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
 
         self.address_proj = os.path.dirname(self.config)
 
@@ -379,12 +349,6 @@ class test ():
             pass
 
     def check_and_test(self):
-        try:
-            del self.app
-        except:
-            pass
-        self.app = wx.App()
-        self.app.MainLoop()
 
 
         self.address_proj = os.path.dirname(self.config)

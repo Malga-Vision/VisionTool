@@ -47,6 +47,7 @@ class Frame_selection(wx.Frame):
         self.Button1 = wx.Button(self, id=wx.ID_ANY, pos=(150,300),label="Finish")
         self.Button1.Bind(wx.EVT_BUTTON,self.Button)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.ShowModal()
 
         # (Explicit call to MakeModal)
 
@@ -58,7 +59,6 @@ class Frame_selection(wx.Frame):
         del self._disabler
         self.eventLoop.Exit()
         self.Destroy()
-
 
     def ShowModal(self):
         """
@@ -88,9 +88,6 @@ class Frame_selection(wx.Frame):
         file.close()
         self.Close()
 
-    def show(self,parent,config):
-
-        frame =  Frame_selection(parent,config).ShowModal()
 
 
     if __name__ == '__main__':
