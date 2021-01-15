@@ -50,6 +50,9 @@ class test ():
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
         wx.Yield()
+        self.app.ExitMainLoop()
+        self.app.MainLoop()
+
 
     def open_project(self):
 
@@ -57,6 +60,8 @@ class test ():
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
         wx.Yield()
+        self.app.ExitMainLoop()
+        self.app.MainLoop()
 
     def Load_Videos(self):
 
@@ -84,7 +89,6 @@ class test ():
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
-        wx.Yield()
 
 
 
@@ -130,6 +134,9 @@ class test ():
                     self.config_file.writelines(pathname[i] + '\n')
 
         self.config_file.close()
+        wx.Yield()
+        self.app.ExitMainLoop()
+        self.app.MainLoop()
 
 
     def get_video_list(self):
