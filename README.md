@@ -53,7 +53,7 @@ test = test()
 
 test.new_project_routine()
 
-# or open an existing one  (choose one or the other)
+# open the project
 
 test.open_project()
 
