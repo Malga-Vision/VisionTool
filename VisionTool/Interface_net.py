@@ -223,7 +223,7 @@ class Open_interface(wx.Frame):
             frame = Open_interface(parent, gui_size, config).ShowModal()
         else:
             app = wx.App()
-            frame = Open_interface(parent, gui_size, config)
+            frame = Open_interface(parent, gui_size, config).Show()
             app.MainLoop()
 
     def ShowModal(self):
