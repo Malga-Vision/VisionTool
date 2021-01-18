@@ -55,26 +55,23 @@ test.new_project_routine()
 
 [# alternatively open an existing project
 
-test.open_project()          ]
+test.open_project()]
 
-# load the video provided
+# load the video provided, load the provided sample annotations, and perform frame extraction 
 
 test.Load_Videos()
 
-# needed for proceeding with manual or automatic annotation, code to handle the rest of operations 
-
-test.annotate()
-# This line of code is necessary to perform loading of provided annotation for sample video, loading of labels and frame extraction.
+'''
+this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code. If you wish, you can modify the existing annotations or add more to improve precision in prediction).
+'''
 
 test.view_annotation()
 
-this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code. If you wish, you can modify the existing annotations or add more to improve precision in prediction).
 
 # set the preferences for the neural network prediction (at the end press Ok)
+#for the included sample video, we suggest to try EfficientNet architectures with a minimum batch size = 5 to obtain a better prediction
 
 test.preferences_annotation()
-
-#for the included sample video, we suggest to try EfficientNet architectures with a minimum batch size = 5 to obtain a better prediction
 
 # perform training and prediction 
 test.check_and_train()
@@ -156,6 +153,7 @@ The user can adopt ImageNet pretrained neural networks or train from scratch, se
 ### Frame Annotation 
 
 To proceed with frame annotation, click on the label frame button (red square in Fig. 4). A confirmation message will pop-up. After confirmation, the toolbox asks for annotation preferences through a dedicated interface. 
+The *help* button provides a detailed support for all the possible designed operations in the annotation GUI. However, in the next lines we will provide few explanation on the offered annotation features. 
 
 ![picture 6](https://user-images.githubusercontent.com/51142446/103317218-26cdc200-4a2b-11eb-8b93-ce714213023c.PNG)
 
@@ -169,23 +167,29 @@ Click on finish, and the interface will automatically close. At this stage, the 
 
 *Figure 7. VisionTool annotation interface* 
 
-Here the user can annotate the interesting points (previously indicated in the preferences interface) using the mouse. Each annotation point can be drag and moved if necessary. The checkbox annot. only can be used to only view the frames that were randomly extracted to be manually annotated (number indicated in interface of Fig.4). If such number has not been indicated, the option will not be enabled. The checkbox annot. auto only can be used to only view the frames that will be automatically labeled by a neural network (again, if the option has been selected in Fig.4 at the moment of frames extraction). 
+Here the user can annotate the interesting points (previously indicated in the preferences interface) using the mouse. Each annotation point can be drag and moved if necessary. The checkbox annot. only can be used to only view the frames that were randomly extracted to be manually annotated (number indicated in interface of Fig.4). If such number has not been indicated, the option will not be enabled. The checkbox *annot. auto* only can be used to only view the frames that will be automatically labeled by a neural network (again, if the option has been selected in Fig.4 at the moment of frames extraction). 
 If the user did not indicate the number of frames in the previous interface, simply closing the annotation interface and inputting the data in the main GUI with a new frame extraction will enable such options. If no checkbox is selected, all the sequence of frames can be viewed in the interface. 
 Zoom button allows to increase or decrease view zooming. Save button is necessary to save the annotations in an excel file and to proceed with network training. 
 Help opens a short explanation of the annotation process, while home cancel the results of zooming. Quit closes the annotation interface.
 Help in annotation invokes the automatic annotation assistance and will only be available if the number of frames to be automatically annotated has been set in the main GUI. 
 When the help in annotation button is pressed, the interface will freeze until the training of the assistance neural network will be finished. At this stage, it is possible to view the results of such procedure with a different color map with respect to the one corresponding to manual annotation (see Fig. 8). The resulting labeled points can be moved (if the results were not correct), so that in the end, a complete set of annotated images is available. Press cancel to reset the results provided by the automatic annotation tool.
+**Important** After annotation assistance has been invoked, press the *save* button to save the automatic provided annotation and use them for further training. If you don't save them, they will be still available, but training of neural network will only consider the manual provided annotations. 
 
 ### Neural Network Training
 
 After a set of frames has been annotated either manually or with the automatic procedure and a neural network and a backbone have been selected using the dedicated interface, it is finally possible to train the architecture for features extraction.
 Simply press the start training (yellow button in Fig.4) button on the main GUI. After training is completed, the toolbox will perform prediction on test data (i.e., the frames without any annotation either manually or automatically performed).  
 
+### Multiple Video analysis
+
+When dealing with pose estimation or semantic features extraction tasks, the availability and quality of annotations is fundamental. VisionTool offers the possibility to combine different videos to build a common prediction neural network model. In order to use the multiple video analysis, you first need to at least extract the frames for all the desired videos. So, select each video in the *Video name list* using the GUI, and press on label frames. You can then annotate a few of these frames for each of the videos, and finally save your annotations. Then, click on *Analyze_all* in the  *Video name list* in the GUI, and press *start training*. All the annotations will be combined and will be used to train a neural network model (usually, with a better generalization). 
+
 
 ### Neural Network Testing
 
 If a model has already been trained, and the user wishes to predict frames, he can press the button start testing (light blue button in Fig.4).  The toolbox will check the existence of a trained architecture. 
+click on *Analyze_all* if you want to use the trained architecture to predict every video contained in the project to provide prediction of annotated labels. 
 
 ### Output 
 
-VisionTool’s output is an excel file with the predicted 2d joints coordinates and the confidence of prediction. If the option Single Label Image Saving is checked in the neural network parameters setting interface (see Fig. 5), an image per each label will be saved.  In such images, intensity pixel corresponds to the confidence of prediction for each specific label. 
+VisionTool’s output is an excel file with the predicted 2d joints coordinates and the confidence of prediction. If the option Single Label Image Saving is checked in the neural network parameters setting interface (see Fig. 5), an image per each label will be saved.  In such images, intensity pixel corresponds to the confidence of prediction for each specific label. You will obtain a number of total images equal to *(number_of_annotated_joints + 1)*number_of_testing_frames*. Of course, the prediction will be only performed on the frames that you did not either manually or automatically annotated. 
