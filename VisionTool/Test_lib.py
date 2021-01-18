@@ -44,9 +44,10 @@ class test ():
         self.app.MainLoop()
 
 
+
+
     def new_project_routine(self):
 
-        initiate = routine()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
 
@@ -56,8 +57,13 @@ class test ():
         initiate = routine()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
+        wx.Yield()
+
 
     def Load_Videos(self):
+
+
+        super().__init__()
 
         if self.address == "":
 
@@ -83,8 +89,7 @@ class test ():
                     self.upload_new_Videos()
             else:
                 self.upload_new_Videos()
-
-
+            wx.Yield()
 
     def upload_new_Videos(self):
 
@@ -96,6 +101,9 @@ class test ():
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
 
+
+
+            wx.Yield()
             pathname = fileDialog.GetPaths()
 
             # videos = os.listdir(dlg.GetPath())
@@ -138,7 +146,8 @@ class test ():
 
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
-
+        app = wx.App()
+        app.MainLoop()
 
         self.config = config
         # uniform
@@ -164,7 +173,6 @@ class test ():
 
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
-            wx.Yield()
 
     def read_videos_for_length(self,num_annotated=0,num_auto_annotated=0):
 
@@ -303,7 +311,6 @@ class test ():
 
     def view_annotation(self):
 
-
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
         wx.Yield()
@@ -348,7 +355,6 @@ class test ():
             pass
 
     def check_and_test(self):
-
 
         self.address_proj = os.path.dirname(self.config)
 
