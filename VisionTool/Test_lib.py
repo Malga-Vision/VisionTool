@@ -132,7 +132,7 @@ class test ():
         # uniform
         self.annotation = os.path.dirname(self.config) + os.sep + 'annotation_options.txt'
         self.video_list_with_address = self.get_video_list()
-        self.index_video = index_video
+        self.index_video = 0
         index_type = 0
         self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][
                                           self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
