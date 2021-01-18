@@ -72,9 +72,8 @@ class training ():
         except:
             wx.MessageBox(self.map + 'is not recognized as a valid map \n Settings color map to Pastel2'
                           , 'Error!', wx.OK | wx.ICON_ERROR)
-            self.colormap = plt.get_cmap('inferno')
-            self.error = -1
-            return
+            self.colormap = plt.get_cmap('Pastel2')
+           
 
         self.colormap = self.colormap.reversed()
         colorIndex = np.linspace(0, 255, len(bodyparts))
