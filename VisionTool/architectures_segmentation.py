@@ -215,7 +215,7 @@ class unet():
             mask_ = resize(mask_, (self.IMG_HEIGHT, self.IMG_WIDTH), mode='constant', preserve_range=True)
             a,mask_ = cv2.threshold(mask_,200,255,cv2.THRESH_BINARY)
             mask_=mask_/255.0
-            if len(np.shape(mask)) == 2:
+            if len(np.shape(mask_)) == 2:
                 mask_new = np.zeros((np.shape(mask_)[0], np.shape(mask_)[1], 1))
                 mask_new[:, :, 0] = mask_
                 mask_ = mask_new
