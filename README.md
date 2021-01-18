@@ -59,17 +59,19 @@ test.Load_Videos()
 
 '''
 the next line will open the GUI. By selecting 'annot. only' and scrolling the frames 
-it is possible to see the annotated frames.
-Click 'Save' and close the window and continue with the next line of code. 
-If you wish, you can modify the existing annotations or 
+it is possible to see the annotated frames. Click 'Save' and close the window and continue 
+with the next line of code. If you wish, you can modify the existing annotations or 
 add more to improve precision in prediction).
 '''
 
 test.view_annotation()
 
+'''
+set the preferences for the neural network prediction (at the end press Ok)
+for the included sample video, we suggest to try EfficientNet architectures with a  
+minimum batch size = 5 to obtain a better prediction
 
-# set the preferences for the neural network prediction (at the end press Ok)
-#for the included sample video, we suggest to try EfficientNet architectures with a  minimum batch size = 5 to obtain a better prediction
+'''
 
 test.preferences_annotation()
 
@@ -80,8 +82,12 @@ test.check_and_train()
 
 test.view_annotation()
 
-The regular VisionTool's output (i.e., the prediction folder with labels on top of frame, the '.csv' file reporting prediction and confidence and the single labels folder, 
-if selected in preferences annotation interface, will be created and saved into your project folder). 
+'''
+The regular VisionTool's output (i.e., the prediction folder with labels on top of frame, the '.csv' file 
+reporting prediction and confidence and the single labels folder,  if selected in preferences annotation 
+interface, will be created and saved into your project folder). 
+'''
+
 ``` 
 
 As stated before, these tests are only to provide a fast example of VisionTool workflow and a practical example, however we recommend to run the toolbox using the main.py module, where all the toolbox designed feautures are available. 
