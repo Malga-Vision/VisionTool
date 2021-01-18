@@ -58,8 +58,8 @@ test.new_project_routine()
 test.Load_Videos()
 
 '''
-the next line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames.
-Click 'Save' and close the window and continue with the next line of code. If you wish, you can modify the existing annotations or 
+the next line will open the GUI. By selecting 'annot. only' and scrolling the frames  it is possible to see the annotated frames.
+Click 'Save' and close the window and continue with the next line of code.  If you wish, you can modify the existing annotations or 
 add more to improve precision in prediction).
 '''
 
@@ -67,7 +67,7 @@ test.view_annotation()
 
 
 # set the preferences for the neural network prediction (at the end press Ok)
-#for the included sample video, we suggest to try EfficientNet architectures with a minimum batch size = 5 to obtain a better prediction
+#for the included sample video, we suggest to try EfficientNet architectures with a  minimum batch size = 5 to obtain a better prediction
 
 test.preferences_annotation()
 
@@ -142,6 +142,7 @@ VisionTool is completely compatible with DeepLabCut, from which it inherited the
 To open the neural network parameters setting interface, click on the NN evaluation preferences button (dark blue square in Fig. 4). 
 
 ![picture 5](https://user-images.githubusercontent.com/51142446/103317145-ec642500-4a2a-11eb-8e50-1802b220b7b5.PNG)
+
 *Figure 5. Neural network parameters setting GUI*
 VisionTool allows to choose between 4 different neural networks to perform features extraction (i.e., UNet, LinkNet, Pyramid Scene Parsing Network (PSPNet) and Feature Pyramid Network (FPN)). These networks include an encoder module coupled to a decoder one. The toolbox offers 30 different neural networks models to be adopted as backbone for the encoding of the 4 segmentation networks. 
 To set the neural network and the backbone, simply select the desired model from the dedicated menu. The user can also set the learning rate value, the batch size and choose between two different loss functions for the training process:
