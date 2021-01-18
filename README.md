@@ -14,7 +14,7 @@ Alternatively, you can download the code folder, and install the requirements re
 
 ### Operative System supported
 
-VisionTool is compatible and been tested on Ubuntu, Windows and MacOS. 
+VisionTool is a multi-platform toolbox, it is compatible and been tested on Ubuntu, Windows and MacOS. 
 If you are using Ubuntu, you may need to install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
 
 ### VisionTool running
