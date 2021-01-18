@@ -82,7 +82,7 @@ class test ():
             else:
                 self.upload_new_Videos()
                 self.load_testing_annotation(self.config_file_text)
-
+            self.annotate()
             wx.Yield()
 
 
@@ -202,11 +202,7 @@ class test ():
 
         app = wx.App()
         app.MainLoop()
-        if self.annotate_was_called==0:
-            wx.MessageBox('First, call the instruction annotate() \n '
-                          'Pipeline error'
-                          , 'Error!', wx.OK | wx.ICON_ERROR)
-            return
+
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
         wx.Yield()
@@ -221,11 +217,7 @@ class test ():
     def check_and_train(self):
         app = wx.App()
         app.MainLoop()
-        if self.annotate_was_called == 0:
-            wx.MessageBox('First, call the instruction annotate() \n '
-                          'Pipeline error'
-                          , 'Error!', wx.OK | wx.ICON_ERROR)
-            return
+
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -258,11 +250,7 @@ class test ():
     def check_and_test(self):
         app = wx.App()
         app.MainLoop()
-        if self.annotate_was_called == 0:
-            wx.MessageBox('First, call the instruction annotate() \n '
-                          'Pipeline error'
-                          , 'Error!', wx.OK | wx.ICON_ERROR)
-            return
+
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
