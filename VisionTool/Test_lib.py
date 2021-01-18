@@ -122,11 +122,12 @@ class test ():
         return a
 
 
-    def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
+    def annotate(self):
 
+        num_annotated = 0, num_auto_annotated = 0
         self.load_testing_annotation(self.config_file_text)
 
-        self.config = config
+        self.config = self.config_file_text
         # uniform
         self.annotation = os.path.dirname(self.config) + os.sep + 'annotation_options.txt'
         self.video_list_with_address = self.get_video_list()
