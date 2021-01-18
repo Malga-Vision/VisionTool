@@ -1,7 +1,7 @@
 """
     Source file name: test_label_video.py
     
-    Description: this file contains the code to test video labeling
+        Description: this file contains the code to test VisionTool with a sample video included in the repository
     
     Copyright (C) <2020>  <Vito Paolo Pastore, Matteo Moro, Francesca Odone>
     This program is free software: you can redistribute it and/or modify
@@ -14,8 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-
-
 
 
 import wx
@@ -44,8 +42,6 @@ class test ():
         self.app.MainLoop()
 
 
-
-
     def new_project_routine(self):
 
         initiate = routine()
@@ -65,8 +61,6 @@ class test ():
     def Load_Videos(self):
 
 
-        super().__init__()
-
         if self.address == "":
 
             error = wx.MessageBox("you need to create a new project or open an existing one, first!")
@@ -82,35 +76,16 @@ class test ():
             a = self.config_file.readlines()
             self.config_file.close()
             if len(a) > 1:
-                if wx.MessageBox(
-                        "The project already contains videos.\n"
-                        "Do you want to add new videos?", "Confirm",
-                        wx.YES_NO | wx.NO_DEFAULT, None) == wx.NO:
-                            pass
-                else:
-                    self.upload_new_Videos()
+                pass
             else:
                 self.upload_new_Videos()
             wx.Yield()
 
     def upload_new_Videos(self):
 
-        with wx.FileDialog(None, "Select videos",
-                           wildcard='select video files (*.mp4;*.avi;*.mpeg4)|*.mp4;*.avi;*.mpeg4|''mp4 files (*.mp4)|*.mp4|'
-                                    'avi files (*.avi)|*.avi|' 'mpeg4 (*.mpeg4)|*.mpeg4',
-                           defaultDir  = self.CONFIG_PATH + os.sep,style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE) as fileDialog:
-
-            if fileDialog.ShowModal() == wx.ID_CANCEL:
-                return  # the user changed their mind
+            pathname = self.CONFIG_PATH + os.sep + 'sample_video.avi'
 
 
-
-            wx.Yield()
-            pathname = fileDialog.GetPaths()
-
-            # videos = os.listdir(dlg.GetPath())
-            # if len(videos)==0:
-            #     error = wx.MessageBox("Warning","Attention, no valid video has been selected")
             try:
                 self.config_file = open(os.path.join(self.address, "file_configuration.txt"), "r")
             except:
@@ -129,15 +104,15 @@ class test ():
                               , 'Error!', wx.OK | wx.ICON_ERROR)
                 return
             if len(a) > 1:
-                for i in range(0, len(pathname)):
-                    self.config_file.writelines(pathname[i] + '\n')
+                pass
             else:
                 self.config_file.writelines("\nVideo\n")
 
-                for i in range(0, len(pathname)):
-                    self.config_file.writelines(pathname[i] + '\n')
 
-        self.config_file.close()
+                self.config_file.writelines(pathname + '\n')
+
+            self.config_file.close()
+            wx.Yield()
 
 
     def get_video_list(self):
@@ -148,8 +123,8 @@ class test ():
 
 
     def annotate(self, index_video, config,num_annotated = 0, num_auto_annotated = 0):
-        app = wx.App()
-        app.MainLoop()
+
+        self.load_testing_annotation(self.config_file_text)
 
         self.config = config
         # uniform
@@ -160,21 +135,10 @@ class test ():
         self.name = 'Extracted_frames_' + self.video_list_with_address[self.index_video][
                                           self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1]
 
-        if not os.path.isfile(os.path.dirname(self.config) + os.sep + 'annotation_options.txt'):
-
-            Frame_selection(None,os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
-            wx.Yield()
-        else:
-            if wx.MessageBox(
-                    "A set of preferences has already been saved.\n"
-                    "Do you want to change your preferences?", "Confirm",
-                    wx.YES_NO | wx.YES_DEFAULT, None) == wx.YES:
-                os.remove(os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
-                Frame_selection(None, os.path.dirname(self.config) + os.sep + 'annotation_options.txt')
-                wx.Yield()
 
         if index_type == 0:
             self.read_videos_for_length(num_annotated,num_auto_annotated)
+        wx.Yield()
 
     def read_videos_for_length(self,num_annotated=0,num_auto_annotated=0):
 
@@ -347,9 +311,6 @@ class test ():
         if not self.does_annotation_exist:
             wx.MessageBox('No annotation found!', 'Annotation missing', wx.OK | wx.ICON_INFORMATION)
             return
-
-
-
 
 
         else:
