@@ -124,7 +124,8 @@ class test ():
 
     def annotate(self):
 
-        num_annotated = 0, num_auto_annotated = 0
+        num_annotated = 0
+        num_auto_annotated = 0
         self.load_testing_annotation(self.config_file_text)
 
         self.config = self.config_file_text
