@@ -28,30 +28,19 @@ test.new_project_routine()
 
 # create a new project
 
-test.open_project()
+# test.open_project()
 
 # or open an existing one  (choose one or the other, you can comment one of the two lines of code)
 
 test.Load_Videos()
 
-# add videos to the project, or load the ones already added, for test, you can use the file 'sample_video.avi' downloaded with the repository 
-
-#test.Frame_selection()
-
-# set preferences for annotation (not necessary if you use the line of code load_testing_annotation, uncomment if you want to make your annotation again). 
-
-
-test.load_testing_annotation(test.config_file_text)
-
-# if you are using the sample_video uploaded in the repository, use the next line of code to download existing annotation for training and testing
+# adds sample video included within the repository to the project, loads the sample annotations and labels,
+# performs frame extraction and reads information about the video (you have to call it before 'view_annotation' or 'check_and_train' modules)
 
 test.preferences_annotation()
-# set the preferences for the neural network prediction
+# set the preferences for the neural network prediction, the suggested parameters for sample video analysis are 
+#LinkNet with backbone an EfficientNet architecture and a minimum batch size equal to 5.
 
-test.annotate(0, test.config_file_text)
-
-# needed for proceeding with manual or automatic annotation, code to handle the rest of operations.
-# you can view the annotation, and more important, this line of code extracts the frames. 
 
 # perform training
 test.check_and_train()
