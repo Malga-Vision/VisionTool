@@ -31,10 +31,10 @@ Alternatively, you can use a Python IDE and run the file *main.py*.
 
 ### Tests 
 
-**VisionTool is expected to be run using the main GUI**.
+**VisionTool is expected to be run using the main GUI** (as described in section *Visiontool running*).
 
-However, we uploaded a set of tests for VisionTool that can be run outside of the main GUI, as single code instructions. The test.py file contained in test folder provide an example of analysis for a sample video included in the repository and automatically downloaded after installation. 
-In detail, we uploaded a set of possible annotations so that training and testing may be directly possible. 
+However, we uploaded a set of tests for VisionTool that can be run outside of the main GUI, as single code instructions.The aim of such tests is to provide an example of Visiontool's workflow on a sample video included in the repository and automatically downloaded after installation. The file *test.py* in test folder contains the line of codes necessary to perform the example test.
+For the analysis of the sample video, we uploaded a set of possible annotations so that training and prediction may be directly tested. 
 You can run the test.py file for an example of working pipeline. Or you can run the single instructions within python. 
 In the latter case, you first need to import the Test_lib module from VisionTool, so open python and then run:
 
@@ -61,28 +61,32 @@ test.open_project()          ]
 
 test.Load_Videos()
 
-# use the next line of code to download existing annotation for testing  
-
-test.load_testing_annotation(test.config_file_text)
-
 # needed for proceeding with manual or automatic annotation, code to handle the rest of operations 
 
-test.annotate(0,test.config_file_text)
-# this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code.
+test.annotate()
+# This line of code is necessary to perform loading of provided annotation for sample video, loading of labels and frame extraction.
+
+test.view_annotation()
+
+this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code. If you wish, you can modify the existing annotations or add more to improve precision in prediction).
 
 # set the preferences for the neural network prediction (at the end press Ok)
 
 test.preferences_annotation()
 
-# perform training 
+#for the included sample video, we suggest to try EfficientNet architectures with a minimum batch size = 5 to obtain a better prediction
+
+# perform training and prediction 
 test.check_and_train()
 
-# view results
+# view prediction as labels on top of predicted frames. 
+
 test.view_annotation()
 
+The regular VisionTool's output (i.e., the prediction folder with labels on top of frame, the '.csv' file reporting prediction and confidence and the single labels folder, if selected in preferences annotation interface, will be created and saved into your project folder). 
 ``` 
 
-As stated before, these tests are only to provide a fast example of VisionTool working, however we recommend to run the toolbox using the main.py module. 
+As stated before, these tests are only to provide a fast example of VisionTool workflow and a practical example, however we recommend to run the toolbox using the main.py module, where all the toolbox designed feautures are available. 
 
 ## VisionTool GUI
 VisionTool’s main GUI shows two different interfaces. The first one “Features_Extraction” can be used to perform annotation, training and testing on an imported set of videos. The second one “Pose Estimation” includes the implementation of neural networks architectures to perform action recognition. In its first release, only features extraction is available. Future releases will be focus on the implementation of an actual action recognition submodule including the latest architectures used in the scientific community for the solution of recognition problems.
