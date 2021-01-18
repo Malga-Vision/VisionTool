@@ -37,13 +37,12 @@ class test ():
     def __init__(self):
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.CONFIG_PATH = os.path.dirname(os.path.join(self.ROOT_DIR, 'configuration.conf'))  # requires `import os`
-        self.upload_existent = 0
-        self.app = wx.App()
-        self.app.MainLoop()
+
 
 
     def new_project_routine(self):
-
+        app = wx.App()
+        app.MainLoop()
         initiate = routine()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
@@ -51,7 +50,8 @@ class test ():
 
 
     def open_project(self):
-
+        app = wx.App()
+        app.MainLoop()
         initiate = routine()
         self.address = initiate.open_existing_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
@@ -60,7 +60,8 @@ class test ():
 
     def Load_Videos(self):
 
-
+        app = wx.App()
+        app.MainLoop()
         if self.address == "":
 
             error = wx.MessageBox("you need to create a new project or open an existing one, first!")
@@ -79,7 +80,10 @@ class test ():
                 pass
             else:
                 self.upload_new_Videos()
+                self.load_testing_annotation(self.config_file_text)
+
             wx.Yield()
+
 
     def upload_new_Videos(self):
 
@@ -123,10 +127,10 @@ class test ():
 
 
     def annotate(self):
-
+        app = wx.App()
+        app.MainLoop()
         num_annotated = 0
         num_auto_annotated = 0
-        self.load_testing_annotation(self.config_file_text)
 
         self.config = self.config_file_text
         # uniform
@@ -158,93 +162,8 @@ class test ():
 
         self.cap.release()
 
-
-
-
-        if not self.upload_existent:
-        # get preferences in textbox annotation panel
-            num_frame_annotated = num_annotated
-            num_frame_automatic = num_auto_annotated
-            start = 0
-            end = count
-
-            self.address = os.path.dirname(self.config)
-
-            if not os.path.isdir(self.address + os.sep + self.name):
-                os.mkdir(self.address + os.sep + self.name)
-
-
-                my_list = list(range(start,
-                                     end))  # list of integers from 1 to 99                # adjust this boundaries to fit your needs
-                random.shuffle(my_list)
-                if num_frame_annotated != 0 or self.import_from_deeplabcut_flag == 1:
-                    if num_frame_annotated < (end - start):
-                            frames = my_list[0:num_frame_annotated]
-                            frames_annotated = my_list[num_frame_annotated:num_frame_automatic + num_frame_annotated]
-                    address = os.path.dirname(self.config)
-                    p = open(os.path.join(address, self.video_list_with_address[self.index_video][
-                                          self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1] + '_index_annotation.txt'), 'w')
-                    p2 = open(os.path.join(address,self.video_list_with_address[self.index_video][
-                                          self.find(self.video_list_with_address[self.index_video], os.sep)[-1] + 1:-1] +  '_index_annotation_auto.txt'), 'w')
-
-                    for i in frames:
-                        p.writelines(str(i))
-                        p.writelines('\n')
-
-                    for i in frames_annotated:
-                        p2.writelines(str(i))
-                        p2.writelines('\n')
-
-                    p.close()
-                    p2.close()
-
-            else:
-                permission = wx.MessageBox(
-                    "Frame already extracted\n"
-                    "Do you want to extract frames again? (The procedure will delete previous frames", "Confirm",
-                    wx.YES_NO | wx.NO_DEFAULT, None)
-                if permission == 2:
-                    shutil.rmtree(self.address + os.sep + self.name)
-                    try:
-                        os.mkdir(self.address + os.sep + self.name)
-
-                    except:
-                        os.mkdir(self.address + os.sep + self.name)
-
-                    num_frame_annotated = int(num_annotated)
-                    num_frame_automatic = int(num_auto_annotated)
-
-                    my_list = list(range(start,
-                                         end))  # list of integers from 1 to 99                # adjust this boundaries to fit your needs
-                    random.shuffle(my_list)
-                    if num_frame_annotated != 0 or self.import_from_deeplabcut_flag == 1:
-                        if num_frame_annotated < (end - start):
-                                frames = my_list[0:num_frame_annotated]
-                                frames_annotated = my_list[num_frame_annotated:num_frame_automatic + num_frame_annotated]
-                        address = os.path.dirname(self.config)
-                        p = open(os.path.join(address, '_index_annotation.txt'), 'w')
-                        p2 = open(os.path.join(address, '_index_annotation_auto.txt'), 'w')
-
-                        for i in frames:
-                            p.writelines(str(i))
-                            p.writelines('\n')
-
-                        for i in frames_annotated:
-                            p2.writelines(str(i))
-                            p2.writelines('\n')
-
-                        p.close()
-                        p2.close()
-
-
-
-
-
-                else:
-                    return
-        else:
-            if not os.path.isdir(self.address + os.sep + self.name):
-                os.mkdir(self.address + os.sep + self.name)
+        if not os.path.isdir(self.address + os.sep + self.name):
+            os.mkdir(self.address + os.sep + self.name)
         start = 0
         end = count
         self.frames_id = np.asarray(range(start, end, 1)).astype(int)
@@ -278,18 +197,22 @@ class test ():
 
 
     def view_annotation(self):
-
+        app = wx.App()
+        app.MainLoop()
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
         wx.Yield()
 
-    def preferences_annotation(self):
 
+    def preferences_annotation(self):
+        app = wx.App()
+        app.MainLoop()
         Open_interface.show(None, None, (700, 700), self.address)
         wx.Yield()
 
     def check_and_train(self):
-
+        app = wx.App()
+        app.MainLoop()
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -320,7 +243,8 @@ class test ():
             pass
 
     def check_and_test(self):
-
+        app = wx.App()
+        app.MainLoop()
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -362,7 +286,6 @@ class test ():
                              bodyparts=self.bodyparts, train_flag=0,annotation_assistance=0)
 
     def load_testing_annotation(self,config):
-        self.upload_existent = 1
         self.config = config
         self.dataFrame = pd.read_pickle(os.path.join(self.CONFIG_PATH , 'Annotation_sample_video.avi_test'))
         self.dataFrame.to_pickle(os.path.join(os.path.dirname(self.config),'Annotation_sample_video.avi_test'))
