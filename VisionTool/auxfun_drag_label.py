@@ -1,7 +1,7 @@
 """
-    Source file name: nb_panel.py  
+    Source file name: auxfun_drag_label.py  
     
-    Description: this file contains the code to handle the GUI for selecting new videos and opening existing projects
+    Description: this file contains the code to handle the drag of annotated points
     
     #Inherited from DeepLabCUT 
     Alexander Mathis, Pranav Mamidanna, Kevin M Cury, Taiga Abe, Venkatesh N Murthy,Mackenzie Weygandt Mathis, and Matthias Bethge. Deeplabcut: markerless pose estimation
