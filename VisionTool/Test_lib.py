@@ -37,6 +37,7 @@ class test ():
     def __init__(self):
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.CONFIG_PATH = os.path.dirname(os.path.join(self.ROOT_DIR, 'configuration.conf'))  # requires `import os`
+        self.annotate_was_called = 0
 
 
 
@@ -127,6 +128,7 @@ class test ():
 
 
     def annotate(self):
+        self.annotate_was_called = 1
         app = wx.App()
         app.MainLoop()
         num_annotated = 0
@@ -197,8 +199,14 @@ class test ():
 
 
     def view_annotation(self):
+
         app = wx.App()
         app.MainLoop()
+        if self.annotate_was_called==0:
+            wx.MessageBox('First, call the instruction annotate() \n '
+                          'Pipeline error'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            return
         opening_toolbox.show(None, self.video_list_with_address, self.index_video, self.config, 0,
                              imtypes=['*.png'], )
         wx.Yield()
@@ -213,6 +221,11 @@ class test ():
     def check_and_train(self):
         app = wx.App()
         app.MainLoop()
+        if self.annotate_was_called == 0:
+            wx.MessageBox('First, call the instruction annotate() \n '
+                          'Pipeline error'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            return
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
@@ -245,6 +258,11 @@ class test ():
     def check_and_test(self):
         app = wx.App()
         app.MainLoop()
+        if self.annotate_was_called == 0:
+            wx.MessageBox('First, call the instruction annotate() \n '
+                          'Pipeline error'
+                          , 'Error!', wx.OK | wx.ICON_ERROR)
+            return
         self.address_proj = os.path.dirname(self.config)
 
         self.file_preferences = self.address_proj + os.sep + 'Architecture_Preferences.txt'
