@@ -58,8 +58,10 @@ test.new_project_routine()
 test.Load_Videos()
 
 '''
-the next line will open the GUI. By selecting 'annot. only' and scrolling the frames  it is possible to see the annotated frames.
-Click 'Save' and close the window and continue with the next line of code.  If you wish, you can modify the existing annotations or 
+the next line will open the GUI. By selecting 'annot. only' and scrolling the frames 
+it is possible to see the annotated frames.
+Click 'Save' and close the window and continue with the next line of code. 
+If you wish, you can modify the existing annotations or 
 add more to improve precision in prediction).
 '''
 
