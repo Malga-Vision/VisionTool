@@ -201,3 +201,65 @@ click on *Analyze_all* if you want to use the trained architecture to predict ev
 ### Output 
 
 VisionTool’s output is an excel file with the predicted 2d joints coordinates and the confidence of prediction. If the option Single Label Image Saving is checked in the neural network parameters setting interface (see Fig. 5), an image per each label will be saved.  In such images, intensity pixel corresponds to the confidence of prediction for each specific label. You will obtain a number of total images equal to *(number_of_annotated_joints + 1)*number_of_testing_frames*. Of course, the prediction will be only performed on the frames that you did not either manually or automatically annotated. 
+
+### Appendix: list of source files and short description 
+
+Source file name: *Frame_Extraction.py*
+
+Description: this file contains the code to extract frames to proceed with manual annotation 
+
+Source file name: *interface_net.py*  
+
+Description: this file contains the code to handle the GUI for setting the neural network preferences for svideo segmentation
+
+Source file name: *New_project_features.py*  
+    
+Description: this file contains the code to save the preferences for annotation (e.g., name of interesting points and annotator name)
+
+Source file name: *test_label_video.py*
+    
+Description: this file contains the code to test VisionTool with a sample video included in the repository
+
+Source file name: *annotation.py*  
+    
+Description: this file contains the code to open the GUI to perform annotation 
+
+Source file name: *architectures_segmentation.py*  
+    
+Description: this file contains the code to perform data augmentation, neural network training and testing, annotation assistance
+
+Source file name: *architectures_segmentation_multiple_videos.py*
+    
+Description: this file contains the code to perform data augmentation, neural network training and testing, annotation assistance for the analysis of multiple videos
+
+Source file name: *auxfun_drag_label.py*  
+    
+Description: this file contains the code to handle the drag of annotated points
+
+Source file name: *create_new_project.py*  
+    
+Description: this file allows VisionTool to create a new project, creating the correspondent configuration file 
+
+Source file name: *features_extractor.py* 
+    
+Description: this file contains the code to handle the GUI for the features extraction section of VisionTool
+
+Source file name: *Main.py*  
+
+Description: this file contains the code to open the parent frame and VisionTool's GUI
+
+Source file name: *nb_panel.py*  
+    
+Description: this file contains the code to handle the GUI for selecting new videos and opening existing projects
+
+Source file name: *opening_toolbox.py*  
+    
+Description: this file contains the code to handle the GUI for actually performing the annotation of frames into VisionTool.
+
+Source file name: *pose_estimation.py*  
+    
+Description: this file contains the code to handle the GUI for the pose estimation section of VisionTool
+
+Source file name: *training.py*  
+    
+Description: this file contains the code to call the training module and perform neural network training and testing 
