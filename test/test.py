@@ -28,14 +28,15 @@ test.new_project_routine()
 
 # create a new project
 
-# test.open_project()
-
-# or open an existing one  (choose one or the other, you can comment one of the two lines of code)
 
 test.Load_Videos()
 
 # adds sample video included within the repository to the project, loads the sample annotations and labels,
 # performs frame extraction and reads information about the video (you have to call it before 'view_annotation' or 'check_and_train' modules)
+
+test.view_annotation()
+# this line will open the GUI. By selecting 'annot. only' and scrolling the frames it is possible to see the annotated frames. Click 'Save' and close the window and continue with the next line of code. If you wish, you can modify the existing annotations or add more to improve precision in prediction).
+
 
 test.preferences_annotation()
 # set the preferences for the neural network prediction, the suggested parameters for sample video analysis are 
