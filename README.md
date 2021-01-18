@@ -53,10 +53,6 @@ test = test()
 
 test.new_project_routine()
 
-[# alternatively open an existing project
-
-test.open_project()]
-
 # load the video provided, load the provided sample annotations, and perform frame extraction 
 
 test.Load_Videos()
