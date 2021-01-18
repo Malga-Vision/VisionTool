@@ -48,8 +48,10 @@ class test ():
 
     def new_project_routine(self):
 
+        initiate = routine()
         self.address = initiate.new_project()
         self.config_file_text = os.path.join(self.address, "file_configuration.txt")
+        wx.Yield()
 
 
     def open_project(self):
