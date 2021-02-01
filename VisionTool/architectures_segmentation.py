@@ -45,7 +45,7 @@ class unet():
 
     def __init__(self,architecture, backbone,image_net,single_labels,colors,address,annotation_file,image_folder,annotation_folder,bodyparts,BATCH_SIZE = 5,train_flag=1,annotation_assistance = 0,lr = 0.001,loss = "Weighted Categorical_cross_entropy",markersize=13):
 
-        self.lr_drop = 10
+        self.lr_drop = 25
 
 
         self.loss_function = loss
@@ -304,10 +304,11 @@ class unet():
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
         num_zeros = 1
-        while (weight * 10 < 1):
-            weight = weight * 10
+        while (weight * 100 < 1):
+            weight = weight * 100
             num_zeros += 1
-        weight = int(weight * 10) / np.power(10, num_zeros)
+
+        weight = int(weight * 100) / np.power(100, num_zeros)
         weights[0, 1:] = weight
         weights[0, 0] = 1 - np.sum(weights[0, 1:])
         weights = weights[0]
@@ -341,10 +342,11 @@ class unet():
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
         num_zeros = 1
-        while (weight * 10 < 1):
-            weight = weight * 10
+        while (weight * 100 < 1):
+            weight = weight * 100
             num_zeros += 1
-        weight = int(weight * 10) / np.power(10, num_zeros)
+
+        weight = int(weight * 100) / np.power(100, num_zeros)
         weights[0, 1:] = weight
         weights[0, 0] = 1 - np.sum(weights[0, 1:])
         weights = weights[0]
