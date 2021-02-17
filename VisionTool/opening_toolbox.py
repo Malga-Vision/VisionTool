@@ -555,15 +555,16 @@ class MainFrame(wx.Frame):
         num_columns = len(self.dataFrame3.columns)
         for j in range(0, num_columns):
             for i in range(3, len(self.dataFrame[self.dataFrame.columns[0]].values)):
-                temp = self.dataFrame[self.dataFrame.columns[0]].values[i]
-                index = self.find(temp, os.sep)
-                index = index[len(index) - 1]
-                index3 = self.find(temp, '.')
-                index3 = index3[len(index3) - 1]
-                index2 = temp.find('img')
-                a = int(temp[index2 + 3:index3])
-                self.dataFrame3[self.dataFrame3.columns[j]].values[a] = \
-                self.dataFrame[self.dataFrame.columns[j+1]].values[i]
+                # temp = self.dataFrame[self.dataFrame.columns[0]].values[i]
+                # index = self.find(temp, os.sep)
+                # index = index[len(index) - 1]
+                # index3 = self.find(temp, '.')
+                # index3 = index3[len(index3) - 1]
+                # index2 = temp.find('img')
+                # a = int(temp[index2 + 3:index3])
+                # self.dataFrame3[self.dataFrame3.columns[j]].values[a] = \
+                # self.dataFrame[self.dataFrame.columns[j+1]].values[i]
+                self.dataFrame3[self.dataFrame3.columns[j]].values[i-3] = self.dataFrame[self.dataFrame.columns[j+1]].values[i]
 
 
 
@@ -817,7 +818,7 @@ class MainFrame(wx.Frame):
 
         except:
             try:
-                #FOR DEEPLABCUT COMPATIBILITY
+                #to import from csv in case pickle error arises, or another software is used for annotation
                 dat = pd.read_csv(self.filename + '.csv', header=None)
                 os.rename(os.path.join(self.filename), os.path.join(self.filename + "old"))
                 dat.to_pickle(self.filename)
