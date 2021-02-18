@@ -108,7 +108,7 @@ class Label_frames(wx.Panel):
         sizer_8.Add(self.textbox_automatic_ann, flag=wx.RIGHT, border=10)
 
 
-        self.import_from_deeplabcut = wx.Button(self, label="Import from DeepLabCut")
+        self.import_from_deeplabcut = wx.Button(self, label="Import annotation from other software (.csv file)")
         sizer_9.Add(self.import_from_deeplabcut, flag=wx.RIGHT, border=10)
         self.import_from_deeplabcut.Bind(wx.EVT_BUTTON, self.import_from_deeplabcut_method)
 
