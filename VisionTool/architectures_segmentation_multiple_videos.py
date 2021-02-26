@@ -260,8 +260,8 @@ class unet_multiple_videos():
                 self.Y_train = Y_train
 
             else:
-                self.X_Train = np.row_stack((self.X_train,X_train))
-                self.Y_Train = np.row_stack((self.Y_train,Y_train))
+                self.X_train = np.row_stack((self.X_train,X_train))
+                self.Y_train = np.row_stack((self.Y_train,Y_train))
 
     def train(self):
 
