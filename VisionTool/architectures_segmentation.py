@@ -33,6 +33,8 @@ from itertools import chain
 from skimage.io import imread, imshow, imread_collection, concatenate_images
 from skimage.transform import resize
 from skimage.morphology import label
+import skvideo
+import skvideo.io
 import pandas as pd
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import Input,Conv2D, Conv2DTranspose,Dropout, Lambda,MaxPooling2D,concatenate
@@ -303,15 +305,22 @@ class unet():
 
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
-        num_zeros = 1
-        while (weight * 100 < 1):
-            weight = weight * 100
-            num_zeros += 1
 
-        weight = int(weight * 100) / np.power(100, num_zeros)
+        num_zeros = 1
+        # while (weight * 100 < 1):
+        #     weight = weight * 100
+        #     num_zeros += 1
+        #
+        # weight = int(weight * 100) / np.power(100, num_zeros)
         weights[0, 1:] = weight
-        weights[0, 0] = 1 - np.sum(weights[0, 1:])
-        weights = weights[0]
+        weights[0, 0] = 0.01*len(self.bodyparts)
+
+        while weights[0,0]>weights[0,1]:
+            weights[0,0] = weights[0,0]/10
+            num_zeros+=1
+
+        for i in range(1,len(self.bodyparts)+1):
+            weights[0,i] = weights[0,i] - 10**-(num_zeros+1)
 
         if self.loss_function=="Weighted Categorical_cross_entropy":
             loss = self.weighted_categorical_crossentropy(weights)
@@ -341,14 +350,22 @@ class unet():
         session = tf.Session(config=session_config)
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
-        num_zeros = 1
-        while (weight * 100 < 1):
-            weight = weight * 100
-            num_zeros += 1
 
-        weight = int(weight * 100) / np.power(100, num_zeros)
+        num_zeros = 1
+        # while (weight * 100 < 1):
+        #     weight = weight * 100
+        #     num_zeros += 1
+        #
+        # weight = int(weight * 100) / np.power(100, num_zeros)
         weights[0, 1:] = weight
-        weights[0, 0] = 1 - np.sum(weights[0, 1:])
+        #weights[0, 0] = 1 - np.sum(weights[0, 1:])
+        weights[0,0] = 0.01 * len(self.bodyparts)
+        while weights[0,0]>weights[0,1]:
+            weights[0,0] = weights[0,0]/10
+            num_zeros+=1
+
+        for i in range(1,len(weights)):
+            weights[i] = weights[i] - np.power(10,num_zeros+1)
         weights = weights[0]
         if self.loss_function=="Weighted Categorical_cross_entropy":
             loss = self.weighted_categorical_crossentropy(weights)
@@ -517,6 +534,11 @@ class unet():
 
         # if this is a regular testing, all of the images (but the annotated ones) have to be analyzed
         if self.annotation_assistance == 0:
+
+            out = skvideo.io.FFmpegWriter(os.path.join(OUTPUT, self.name_video_list + '.avi'), outputdict={ '-b': '300000000'})
+
+
+
             for i in range(0, len(preds_test)):
 
                 results = np.zeros((self.num_bodyparts*2))
@@ -525,6 +547,8 @@ class unet():
                 #here to update dataframe with annotations
                 img = imread(self.image_folder + os.sep + files[self.testing_index[i]])
                 sizes_test = np.shape(img)[:-1]
+
+
                 for j in range(0,self.num_bodyparts+1):
                     if j==0: continue
 
@@ -534,7 +558,6 @@ class unet():
                     preds_test_upsampled= (preds_test_upsampled * 255).astype(np.uint8)
                     results[(j - 1) * 2:(j - 1) * 2 + 2]= self.prediction_to_annotation(preds_test_upsampled)
                     results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
-                    self.plot_annotation(img,results,files[self.testing_index[i]],OUTPUT)
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[self.testing_index[i]] = -results[(j - 1) * 2]
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[self.testing_index[i]] = results[(j - 1) * 2 + 1]
                     self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[self.testing_index[i]] = -results_plus_conf[(j - 1) * 3]
@@ -542,6 +565,8 @@ class unet():
                         (j - 1) * 3 + 1]
                     self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3 + 2]].values[self.testing_index[i]] = results_plus_conf[
                         (j - 1) * 3 + 2]
+
+                self.plot_annotation(img,results,files[self.testing_index[i]],OUTPUT,out)
 
         else:
             #if annotation assistance is requested, we only want to annotate the random frames extracted by the user
@@ -560,7 +585,7 @@ class unet():
                     preds_test_upsampled = (preds_test_upsampled * 255).astype(np.uint8)
                     results[(j - 1) * 2:(j - 1) * 2 + 2] = self.prediction_to_annotation(preds_test_upsampled)
                     results_plus_conf[(j - 1) * 3:(j - 1) * 3 + 3] = self.compute_confidence(preds_test_upsampled)
-                    self.plot_annotation(img, results, files[self.frame_selected_for_annotation[i]], OUTPUT)
+                    self.plot_annotation(img, results, files[self.frame_selected_for_annotation[i]], OUTPUT,out)
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2]].values[self.frame_selected_for_annotation[i]] = -results[(j - 1) * 2]
                     self.dataFrame[self.dataFrame.columns[(j - 1) * 2 + 1]].values[self.frame_selected_for_annotation[i]] = results[(j - 1) * 2 + 1]
                     self.dataFrame3[self.dataFrame3.columns[(j - 1) * 3]].values[self.frame_selected_for_annotation[i]] = -results_plus_conf[(j - 1) * 3]
@@ -571,6 +596,7 @@ class unet():
 
         self.dataFrame.to_pickle(self.annotation_file)
         self.dataFrame.to_csv(os.path.join(self.annotation_file + ".csv"))
+        out.close()
         try:
             self.dataFrame3.to_csv(os.path.join(self.address, self.annotation_file + "_with_confidence.csv"))
         except:
@@ -583,7 +609,7 @@ class unet():
 
     def prediction_to_annotation(self,annotation):
         # compute_corresponding_annotation_point
-       # annotation = cv2.cvtColor(annotation, cv2.COLOR_BGR2GRAY)
+        # annotation = cv2.cvtColor(annotation, cv2.COLOR_BGR2GRAY)
         thresh, annotation = cv2.threshold(annotation, 150, 255, cv2.THRESH_BINARY)
         contour, hierarchy = cv2.findContours(annotation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         if contour != []:
@@ -677,14 +703,18 @@ class unet():
 
 
 
-    def plot_annotation(self,image,points,name,OUTPUT):
+    def plot_annotation(self,image,points,name,OUTPUT,out):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         for i in range(0, len(self.bodyparts)):
             if not np.isnan(points[i * 2] and points[i * 2 + 1]):
                 cv2.circle(image, (int(round((points[i * 2] * (2 ** 4)))), int(round(points[i * 2 + 1] * (2 ** 4)))),
                            int(round(self.markerSize * (2 ** 4))), self.colors[i]*255, thickness=-1, shift=4)
-            cv2.imwrite(os.path.join(OUTPUT, name),
-                        image)
+
+        cv2.imwrite(os.path.join(OUTPUT, name),
+                    image)
+
+        out.writeFrame(cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+
 
     def ask(self,parent=None, message='Attention:\n you did not input the number of frames to automatically detect in previous interface \n Please, fill the following textbox with such number or cancel'):
         default_value = ""
