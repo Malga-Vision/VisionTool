@@ -63,6 +63,8 @@ class unet():
         self.architecture = architecture
         self.backbone = backbone
         self.image_net = image_net
+        if self.image_net == 'None':
+            self.image_net = None
         self.annotation_assistance = annotation_assistance
         self.learning_rate = float(lr)
         self.train_flag = train_flag
