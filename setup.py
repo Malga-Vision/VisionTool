@@ -25,7 +25,7 @@ setuptools.setup(
 'google-pasta==0.2.0',
 'grpcio==1.32.0',
 'h5py==2.10.0',
-'scikit-video==1.1.10',
+'scikit-video==1.1.11',
 'idna==2.9',
 'image-classifiers==1.0.0',
 'imageio==2.8.0',
