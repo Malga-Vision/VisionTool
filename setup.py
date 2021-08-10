@@ -14,7 +14,6 @@ setuptools.setup(
 'astor==0.8.1',
 'astunparse==1.6.3',
 'cachetools==4.1.0',
-'certifi==2020.4.5.1',
 'chardet==3.0.4',
 'cycler==0.10.0',
 'decorator==4.4.2',
