@@ -71,7 +71,7 @@ setuptools.setup(
 'Werkzeug==1.0.1',
 'wincertstore==0.2',
 'wrapt==1.12.1',
-'wxPython==4.1.0',
+'wxPython==4.0.0',
 'zipp==3.1.0'        ],
 extra_requires= ['tensorflow-gpu==2.2.0']
     
