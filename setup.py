@@ -27,7 +27,6 @@ setuptools.setup(
 'scikit-video==1.1.11',
 'idna==2.9',
 'image-classifiers==1.0.0',
-'imageio==2.8.0',
 'importlib-metadata==1.6.1',
 'joblib==0.16.0',
 'Keras-Applications==1.0.8',
