@@ -15,7 +15,24 @@ Alternatively, you can download the code folder, and install the requirements re
 ### Operative System supported
 
 VisionTool is a multi-platform toolbox, it is compatible and been tested on Ubuntu, Windows and MacOS. 
-If you are using Ubuntu, you may need to install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
+However, if you are using Ubuntu, you may experience problems in the wxPython package installation. There are two possible fix:
+- you can install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
+- if you are using anaconda, create a virtual environment:
+
+``` 
+    conda create -n VisionTool python=3.7.0 anaconda
+``` 
+and then install wxPython from conda with:
+
+``` 
+    conda install -c conda -forge wxPython
+``` 
+Finally, run the installation command again for VisionTool
+
+``` 
+    pip install -e git+https://github.com/Malga-Vision/VisionTool.git#egg=VisionTool
+    
+``` 
 
 ### VisionTool running
 
