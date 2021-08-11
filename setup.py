@@ -66,6 +66,7 @@ setuptools.setup(
 'tifffile==2020.6.3',
 'tqdm==4.46.1',
 'urllib3==1.25.9',
+'wxPython==4.1.0',
 'Werkzeug==1.0.1',
 'wincertstore==0.2',
 'wrapt==1.12.1',
