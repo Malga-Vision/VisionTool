@@ -20,12 +20,12 @@ However, if you are using Ubuntu, you may experience problems in the wxPython pa
 - if you are using anaconda, create a virtual environment:
 
 ``` 
-    conda create -n VisionTool python=3.7.0 anaconda
+    conda create -n VisionTool python=3.7.0
 ``` 
 and then install wxPython from conda with:
 
 ``` 
-    conda install -c conda -forge wxPython
+    conda install -c conda-forge wxPython
 ``` 
 Finally, run the installation command again for VisionTool
 
