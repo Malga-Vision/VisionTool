@@ -59,8 +59,8 @@ setuptools.setup(
 'segmentation-models>=1.0.1',
 'six==1.15.0',
 'sklearn==0.0',
-'tensorboard==2.2.0',
-'tensorflow>=2.2.0',
+'tensorboard==2.6.0',
+'tensorflow==2.6.0',
 'termcolor==1.1.0',
 'threadpoolctl==2.1.0',
 'tifffile==2020.6.3',
@@ -71,6 +71,6 @@ setuptools.setup(
 'wincertstore==0.2',
 'wrapt==1.12.1',
 'zipp==3.1.0'        ],
-extra_requires= ['tensorflow-gpu>=2.2.0']
+extra_requires= ['tensorflow-gpu==2.6.0']
     
 )
