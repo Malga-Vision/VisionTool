@@ -73,7 +73,7 @@ setuptools.setup(
 'wrapt==1.12.1',
 'wxPython==4.1.0',
 'zipp==3.1.0',
-'scikit-video==1.1.11']
+'scikit-video==1.1.11'],
 extra_requires=['tensorflow-gpu==2.2.0']
     
 )
