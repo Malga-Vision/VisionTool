@@ -56,7 +56,7 @@ setuptools.setup(
 'scikit-image==0.17.2',
 'scikit-learn==0.23.1',
 'scipy==1.4.1',
-'segmentation-models>=1.0.1',
+'segmentation-models==1.0.1',
 'six==1.15.0',
 'sklearn==0.0',
 'tensorboard==2.6.0',
