@@ -248,10 +248,12 @@ class unet():
         counter = 0
         
         from segmentation_models import get_preprocessing
+        if self.architecture!='custom_model':
+            self.processer = get_preprocessing(self.backbone)
 
-        self.processer = get_preprocessing(self.backbone)
+            X_train = self.processer(X_train)
 
-        X_train = self.processer(X_train)
+
 
         print('Done!')
 
@@ -269,6 +271,7 @@ class unet():
         mask_datagen.fit(Y_train[:int(Y_train.shape[0] * 0.9)], augment=True, seed=seed)
 
         x = image_datagen.flow(X_train[:int(X_train.shape[0] * 0.9)], batch_size=self.BATCH_SIZE, shuffle=True, seed=seed)
+
         y = mask_datagen.flow(Y_train[:int(Y_train.shape[0] * 0.9)], batch_size=self.BATCH_SIZE, shuffle=True, seed=seed)
 
         # Creating the validation Image and Mask generator
@@ -305,6 +308,9 @@ class unet():
         elif self.architecture=='FPN':
             self.model = FPN(self.backbone, classes = self.num_bodyparts + 1, activation='softmax',encoder_weights=self.image_net,input_shape = (self.IMG_WIDTH,self.IMG_HEIGHT,self.IMG_CHANNELS))
 
+
+        elif self.architecture=='custom_model':
+            self.model = load_model(self.backbone,compile=False)
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
 
@@ -347,6 +353,7 @@ class unet():
 
     def test(self):
         import segmentation_models
+        segmentation_models.set_framework('tf.keras')
         from segmentation_models import Unet
         session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True, per_process_gpu_memory_fraction=0.6))
         session = tf.Session(config=session_config)
@@ -480,9 +487,10 @@ class unet():
 
         from segmentation_models import get_preprocessing
 
-        self.processer = get_preprocessing(self.backbone)
+        if self.architecture!='custom_model':
+            self.processer = get_preprocessing(self.backbone)
 
-        self.X_test = self.processer(self.X_test)
+            self.X_test = self.processer(self.X_test)
 
 
         x = self.X_test

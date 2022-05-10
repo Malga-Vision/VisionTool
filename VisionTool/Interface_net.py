@@ -23,6 +23,7 @@ class Open_interface(wx.Frame):
     def __init__(self, parent, gui_size,address):
         """Constructor"""
         wx.Frame.__init__(self, parent=parent)
+        self.model_address=""
         self.address = address 
         # variable initilization
         self.method = "automatic"
@@ -49,6 +50,11 @@ class Open_interface(wx.Frame):
     
         aug_text = wx.StaticBox(self, label="Select the backbone for your network")
         augboxsizer = wx.StaticBoxSizer(aug_text, wx.VERTICAL)
+
+
+        model_text = wx.StaticBox(self, label="Upload your custom NN model")
+        modelboxsizer = wx.StaticBoxSizer(model_text, wx.VERTICAL)
+
         self.aug_choice = wx.ComboBox(self, style=wx.CB_READONLY)
         options = ['vgg16' ,'vgg19', 'tensorpack', 'resnet18', 'resnet34', 'resnet50' ,'resnet101' ,'resnet152',
                    'seresnet18', 'seresnet34' ,'seresnet50' ,'seresnet101', 'seresnet152',
@@ -111,7 +117,7 @@ class Open_interface(wx.Frame):
         self.train_para.Add(self.loss)
         self.hbox1.Add(netboxsizer, 10, wx.EXPAND | wx.TOP | wx.BOTTOM, 5)
         self.hbox1.Add(augboxsizer, 10, wx.EXPAND | wx.TOP | wx.BOTTOM, 5)
-
+        self.hbox1.Add(modelboxsizer, 10, wx.EXPAND | wx.TOP | wx.BOTTOM, 5)
     
         # self.model_comparison_choice = wx.RadioBox(self, label='Want to compare models?', choices=['Yes', 'No'],
         #                                            majorDimension=1, style=wx.RA_SPECIFY_COLS)
@@ -141,12 +147,18 @@ class Open_interface(wx.Frame):
         boxsizer.Add(self.hbox1, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 10)
         boxsizer.Add(self.hbox2, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 10)
         boxsizer.Add(self.hbox3, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 10)
-    
+
         self.sizer.Add(boxsizer, pos=(0, 0), span=(1, 5), flag=wx.EXPAND | wx.TOP | wx.LEFT | wx.RIGHT, border=10)
 
+
+
+        self.button_model = wx.Button(self,label="Upload Model (.h5)")
+        modelboxsizer.Add(self.button_model)
         self.ok = wx.Button(self, label="Ok")
         self.sizer.Add(self.ok, pos=(1, 1),border=10)
         self.ok.Bind(wx.EVT_BUTTON, self.create_training_dataset)
+
+        self.button_model.Bind(wx.EVT_BUTTON, self.upload_model)
 
         self.reset = wx.Button(self, label="Reset")
         self.sizer.Add(self.reset, pos=(1, 3), span=(1, 1), flag=wx.BOTTOM | wx.RIGHT, border=10)
@@ -171,6 +183,16 @@ class Open_interface(wx.Frame):
         """
         self.config = self.sel_config.GetPath()
 
+
+    def upload_model(self,event):
+        with wx.FileDialog(self, "Select NN model",wildcard='select model file (*.h5)|*.h5',
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return  # the user changed their mind
+            else:
+
+                self.model_address = fileDialog.GetPaths()
     # def chooseOption(self,event):
     #     if self.model_comparison_choice.GetStringSelection() == 'Yes':
     #         self.network_box.Show()
@@ -211,6 +233,11 @@ class Open_interface(wx.Frame):
             file.write(str(self.loss.GetStringSelection()) + '\n')
             file.write('Batch Size\n')
             file.write(str(self.Batch.GetValue()) + '\n')
+            file.write('Custom Model\n')
+            if self.model_address!="":
+                file.write(self.model_address[0] + '\n')
+            else:
+                file.write('None' + '\n')
             file.close()
             self.Close()
         except:

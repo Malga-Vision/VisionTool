@@ -274,12 +274,13 @@ class unet_multiple_videos():
         # config = tf.ConfigProto(gpu_options=gpu_options)
         session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True,per_process_gpu_memory_fraction=0.6))
         session = tf.Session(config=session_config)
-        
+
         from segmentation_models import get_preprocessing
 
-        self.processer = get_preprocessing(self.backbone)
+        if self.architecture!='custom_model':
+            self.processer = get_preprocessing(self.backbone)
 
-        X_train = self.processer(self.X_train)
+            X_train = self.processer(self.X_train)
 
         Y_train = self.Y_train
 
@@ -319,6 +320,7 @@ class unet_multiple_videos():
         from segmentation_models.losses import CategoricalFocalLoss
         from segmentation_models.utils import set_trainable
         import segmentation_models
+        segmentation_models.set_framework('tf.keras')
         from tensorflow.keras.optimizers import RMSprop,SGD
         #model = self.model(self.IMG_HEIGHT,self.IMG_WIDTH,self.IMG_CHANNELS)
 
@@ -335,6 +337,9 @@ class unet_multiple_videos():
 
         elif self.architecture=='FPN':
             self.model = FPN(self.backbone, classes = self.num_bodyparts + 1, activation='softmax',encoder_weights=self.image_net,input_shape = (self.IMG_WIDTH,self.IMG_HEIGHT,self.IMG_CHANNELS))
+
+        elif self.architecture=='custom_model':
+            self.model = load_model(self.backbone,compile=False)
 
         weights = np.zeros((1, self.num_bodyparts + 1), dtype=float)
         weight = 1.0 / self.num_bodyparts
@@ -379,6 +384,7 @@ class unet_multiple_videos():
     def test(self):
 
         import segmentation_models
+        segmentation_models.set_framework('tf.keras')
         from segmentation_models import Unet
         session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True, per_process_gpu_memory_fraction=0.6))
         session = tf.Session(config=session_config)
@@ -491,9 +497,10 @@ class unet_multiple_videos():
 
             from segmentation_models import get_preprocessing
 
-            self.processer = get_preprocessing(self.backbone)
+            if self.architecture!='custom_model':
+                self.processer = get_preprocessing(self.backbone)
 
-            self.X_test = self.processer(self.X_test)
+                self.X_test = self.processer(self.X_test)
 
 
             x = self.X_test
