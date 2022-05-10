@@ -80,14 +80,14 @@ class Open_interface(wx.Frame):
 
         self.single_image = wx.StaticBoxSizer(image_text, wx.HORIZONTAL)
 
-        self.userfeedback_images = wx.RadioBox(self, label='Single label image savings?', choices=['Yes', 'No'], majorDimension=1,
+        self.userfeedback_images = wx.RadioBox(self, label='Single label image (heat map) savings?', choices=['Yes', 'No'], majorDimension=1,
                                         style=wx.RA_SPECIFY_COLS)
         #
         # self.userfeedback_images2 = wx.RadioBox(self, label='Single label image savings2?', choices=['Yes', 'No'],
         #                                        majorDimension=1,
         #                                        style=wx.RA_SPECIFY_COLS)
 
-        self.userfeedback_images.SetSelection(0)
+        self.userfeedback_images.SetSelection(1)
 
 
         self.single_image.Add(self.userfeedback_images, 20, wx.EXPAND, 10)
