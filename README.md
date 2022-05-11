@@ -2,7 +2,7 @@
 VisionTool: a toolbox for semantic features extraction 
 
 ## Introduction
-VisionTool is a python toolbox for pose estimation on videos containing actions. It is powered with a simple and intuititive Graphical User Interface (GUI) to allow a complete analysis from annotation to joint position estimation.
+VisionTool is a python toolbox for pose estimation on videos containing actions. It is powered with a simple and intuititive Graphical User Interface (GUI) to allow a complete analysis from annotation to semantic features detection (e.g., joint position estimation).
 
 ## Installation
 
@@ -10,12 +10,23 @@ To install VisionTool you can use
 
 **pip install -e git+https://github.com/Malga-Vision/VisionTool.git#egg=VisionTool**
 
-Alternatively, you can download the code folder, and install the requirements reported in file requirements.txt
+Alternatively, you can download the code folder, and install the requirements reported in file requirements.txt.
+
+The toolbox compatibility is ensured and tested with python version 3.7.0
+We suggest to create a virtual environment with such version of python and install VisionTool inside the created environment. 
+
+- if you are using anaconda, to create a virtual environment use:
+
+``` 
+    conda create -n VisionTool python=3.7.0
+``` 
 
 ### Operative System supported
 
 VisionTool is a multi-platform toolbox, it is compatible and been tested on Ubuntu, Windows and MacOS. 
-However, if you are using Ubuntu, you may experience problems in the wxPython package installation. There are two possible fix:
+
+However, if you are using Ubuntu, you may experience problems in the wxPython package installation. 
+There are two possible fix:
 - you can install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
 - if you are using anaconda, create a virtual environment:
 
