@@ -13,6 +13,7 @@ To install VisionTool you can use
 Alternatively, you can download the code folder, and install the requirements reported in file requirements.txt.
 
 The toolbox compatibility is ensured and tested with python version 3.7.0
+
 We suggest to create a virtual environment with such version of python and install VisionTool inside the created environment. 
 
 - if you are using anaconda, to create a virtual environment use:
@@ -27,8 +28,8 @@ VisionTool is a multi-platform toolbox, it is compatible and been tested on Ubun
 
 However, if you are using Ubuntu, you may experience problems in the wxPython package installation. 
 There are two possible fix:
-- you can install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
-- if you are using anaconda, create a virtual environment:
+
+- use anaconda. First, create a virtual environment:
 
 ``` 
     conda create -n VisionTool python=3.7.0
@@ -44,7 +45,7 @@ Finally, run the installation command again for VisionTool
     pip install -e git+https://github.com/Malga-Vision/VisionTool.git#egg=VisionTool
     
 ``` 
-
+- otherwise, you can install the library Wx prior to VisionTool, following the instructions in https://wxpython.org/blog/2017-08-17-builds-for-linux-with-pip/index.html.
 ### VisionTool running
 
 To open VisionTool main GUI, open python and use the following lines of code (you may need to cd in the correct folder before (~/src/visiontool)):
