@@ -41,7 +41,7 @@ setuptools.setup(
 'oauthlib==3.1.0',
 'opencv-python==4.4.0.46',
 'opt-einsum==3.3.0',
-'pandas==1.0.4',
+'pandas>=1.0.4',
 'Pillow==7.1.2',
 'protobuf==3.12.2',
 'pyasn1==0.4.8',
